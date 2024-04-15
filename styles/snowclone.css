@@ -253,7 +253,8 @@ figure {
 }
 
 img, svg {
-  vertical-align:middle
+  vertical-align:middle;
+  padding-top:11px
 }
 
 table {
