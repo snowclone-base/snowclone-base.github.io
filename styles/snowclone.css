@@ -4962,6 +4962,10 @@ button#doks-versions {
   color:#1d2d35
 }
 
+.githubicon {
+  color: #f800c2
+}
+
 .doks-subnavbar {
   background-color: rgba(255, 255, 255, 0.95);
   border-bottom:1px solid #e9ecef
