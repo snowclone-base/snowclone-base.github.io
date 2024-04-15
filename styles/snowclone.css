@@ -254,7 +254,6 @@ figure {
 
 img, svg {
   vertical-align:middle;
-  padding-top:11px
 }
 
 table {
@@ -845,9 +844,9 @@ summary {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #5e17eb;
-  border-color:#5e17eb
+  color: black;
+  background-color: #1cffc9;
+  border-color: black
 }
 
 .btn-primary:hover {
