@@ -190,7 +190,7 @@ sub {
 }
 
 a {
-  color: #19E8CC;
+  color: #1cffc9;
   text-decoration: none
 }
 
@@ -908,8 +908,8 @@ summary {
 }
 
 .btn-outline-primary {
-  color: #19E8CC;
-  border-color: #19E8CC 
+  color: #1cffc9;
+  border-color: #1cffc9 
 }
 
 .btn-outline-primary:hover {
@@ -1079,7 +1079,7 @@ summary {
 .nav-link {
   display: block;
   padding: .5rem 1rem;
-  color: #19E8CC;
+  color: #1cffc9;
   transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out
 }
 
@@ -1203,7 +1203,7 @@ summary {
 }
 
 .navbar-light .navbar-nav .nav-link:hover,.navbar-light .navbar-nav .nav-link:focus {
-  color: #19E8CC
+  color: #1cffc9
 }
 
 .navbar-light .navbar-nav .nav-link.disabled {
@@ -1219,7 +1219,7 @@ summary {
 }
 
 .navbar-light .navbar-text a,.navbar-light .navbar-text a:hover,.navbar-light .navbar-text a:focus {
-  color: #19E8CC
+  color: #1cffc9
 }
 
 .card {
@@ -4970,11 +4970,11 @@ button#doks-versions {
 }
 
 .offcanvas .nav-link:hover,.offcanvas .nav-link:focus {
-  color: #19E8CC
+  color: #1cffc9
 }
 
 .offcanvas .nav-link.active {
-  color: #19E8CC
+  color: #1cffc9
 }
 
 .header-bar {
@@ -5175,7 +5175,7 @@ button#doks-versions {
 }
 
 .navbar-light .navbar-nav .active .nav-link {
-  color: #19E8CC
+  color: #1cffc9
 }
 
 .dropdown-divider {
@@ -5379,7 +5379,7 @@ a.docs-link {
 
 .docs-link:hover,.docs-link.active,.page-links a:hover {
   text-decoration: none;
-  color: #19E8CC
+  color: #1cffc9
 }
 
 .nav-link.active,.dropdown-menu-main .dropdown-item.active,.docs-link.active {

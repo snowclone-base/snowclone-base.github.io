@@ -4,18 +4,6 @@
         <meta charset=utf-8>
         <meta http-equiv=x-ua-compatible content="ie=edge">
         <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-        <!-- <link rel=stylesheet type=text/css href=asciinema-player.css> -->
-        <script>
-            (()=>{
-                var t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-                  , e = localStorage.getItem("theme");
-                t && e === null && (localStorage.setItem("theme", "dark"),
-                document.documentElement.setAttribute("data-dark-mode", "")),
-                t && e === "dark" && document.documentElement.setAttribute("data-dark-mode", ""),
-                e === "dark" && document.documentElement.setAttribute("data-dark-mode", "")
-            }
-            )()
-        </script>
         <link rel=stylesheet href="../../styles/casestudy.css">
         <noscript>
             <style>
@@ -27,197 +15,24 @@
         <meta name=robots content="index, follow">
         <meta name=googlebot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
         <meta name=bingbot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-        <title>Introduction - Snowclone</title>
+        <title>Snowclone Design</title>
         <meta name=description content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
-        <!-- <link rel=canonical href=https://snowclone.xyz/case-study/introduction/> -->
+        <link rel=canonical href=https://snowclone-base.github.io/casestudy/snowclone-design>
         <meta property="og:locale" content="en_US">
         <meta property="og:type" content="article">
         <meta property="og:title" content="Snowclone Design">
         <meta property="og:description" content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
-        <!-- <meta property="og:url" content="https://snowclone.xyz/case-study/introduction/"> -->
+        <meta property="og:url" content=https://snowclone-base.github.io/casestudy/snowclone-design>
         <meta property="og:site_name" content="Snowclone">
-        <!-- <meta property="og:image" content="https://snowclone.xyz/doks.png"> -->
-        <script type=application/ld+json>
-            {
-                "@context": "https://schema.org",
-                "@graph": [
-                    {
-                        "@type": "Organization",
-                        "@id": "https://snowclone.xyz/#/schema/organization/1",
-                        "name": "Doks",
-                        "url": "https://snowclone.xyz/",
-                        "sameAs": [
-                            "https://twitter.com/getdoks",
-                            "https://github.com/h-enk/doks"
-                        ],
-                        "logo": {
-                            "@type": "ImageObject",
-                            "@id": "https://snowclone.xyz/#/schema/image/1",
-                            "url": "https://snowclone.xyz/logo-doks.png",
-                            "width": 512,
-                            "height": 512,
-                            "caption": "Doks"
-                        },
-                        "image": {
-                            "@id": "https://snowclone.xyz/#/schema/image/1"
-                        }
-                    },
-                    {
-                        "@type": "WebSite",
-                        "@id": "https://snowclone.xyz/#/schema/website/1",
-                        "url": "https://snowclone.xyz/",
-                        "name": "Otter",
-                        "description": "Otter is a drop-in solution that facilitates peer-to-peer video communication within web applications.",
-                        "publisher": {
-                            "@id": "https://snowclone.xyz/#/schema/organization/1"
-                        }
-                    },
-                    {
-                        "@type": "WebPage",
-                        "@id": "https://snowclone.xyz/case-study/introduction/",
-                        "url": "https://snowclone.xyz/case-study/introduction/",
-                        "name": "Introduction",
-                        "description": "",
-                        "isPartOf": {
-                            "@id": "https://snowclone.xyz/#/schema/website/1"
-                        },
-                        "about": {
-                            "@id": "https://snowclone.xyz/#/schema/organization/1"
-                        },
-                        "datePublished": "2020-10-06T08:48:57CET",
-                        "dateModified": "2020-10-06T08:48:57CET",
-                        "breadcrumb": {
-                            "@id": "https://snowclone.xyz/case-study/introduction/#/schema/breadcrumb/1"
-                        },
-                        "primaryImageOfPage": {
-                            "@id": "https://snowclone.xyz/case-study/introduction/#/schema/image/2"
-                        },
-                        "inLanguage": "en-US",
-                        "potentialAction": [
-                            {
-                                "@type": "ReadAction",
-                                "target": [
-                                    "https://snowclone.xyz/case-study/introduction/"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "@type": "BreadcrumbList",
-                        "@id": "https://snowclone.xyz/case-study/introduction/#/schema/breadcrumb/1",
-                        "name": "Breadcrumbs",
-                        "itemListElement": [
-                            {
-                                "@type": "ListItem",
-                                "position": 1,
-                                "item": {
-                                    "@type": "WebPage",
-                                    "@id": "https://snowclone.xyz/",
-                                    "url": "https://snowclone.xyz/",
-                                    "name": "Home"
-                                }
-                            },
-                            {
-                                "@type": "ListItem",
-                                "position": 2,
-                                "item": {
-                                    "@type": "WebPage",
-                                    "@id": "https://snowclone.xyz/",
-                                    "url": "https://snowclone.xyz/",
-                                    "name": "Docs"
-                                }
-                            },
-                            {
-                                "@type": "ListItem",
-                                "position": 3,
-                                "item": {
-                                    "@type": "WebPage",
-                                    "@id": "https://snowclone.xyz/case-study/",
-                                    "url": "https://snowclone.xyz/case-study/",
-                                    "name": "Case Study"
-                                }
-                            },
-                            {
-                                "@type": "ListItem",
-                                "position": 4,
-                                "item": {
-                                    "@id": "https://snowclone.xyz/case-study/introduction/"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "@context": "https://schema.org",
-                        "@graph": [
-                            {
-                                "@type": "Article",
-                                "@id": "https://snowclone.xyz/#/schema/article/1",
-                                "headline": "Introduction",
-                                "description": "",
-                                "isPartOf": {
-                                    "@id": "https://snowclone.xyz/case-study/introduction/"
-                                },
-                                "mainEntityOfPage": {
-                                    "@id": "https://snowclone.xyz/case-study/introduction/"
-                                },
-                                "datePublished": "2020-10-06T08:48:57CET",
-                                "dateModified": "2020-10-06T08:48:57CET",
-                                "author": {
-                                    "@id": "https://snowclone.xyz/#/schema/person/2"
-                                },
-                                "publisher": {
-                                    "@id": "https://snowclone.xyz/#/schema/organization/1"
-                                },
-                                "image": {
-                                    "@id": "https://snowclone.xyz/case-study/introduction/#/schema/image/2"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "@context": "https://schema.org",
-                        "@graph": [
-                            {
-                                "@type": "Person",
-                                "@id": "https://snowclone.xyz/#/schema/person/2",
-                                "name": "Henk Verlinde",
-                                "sameAs": [
-                                    "https://twitter.com/henkverlinde",
-                                    "https://www.linkedin.com/in/henkverlinde/",
-                                    "https://github.com/h-enk"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "@context": "https://schema.org",
-                        "@graph": [
-                            {
-                                "@type": "ImageObject",
-                                "@id": "https://snowclone.xyz/case-study/introduction/#/schema/image/2",
-                                "url": "https://snowclone.xyz/doks.png",
-                                "contentUrl": "https://snowclone.xyz/doks.png",
-                                "caption": "Introduction"
-                            }
-                        ]
-                    }
-                ]
-            }</script>
         <meta name=theme-color content="#fff">
         <link rel=icon href="../../images/snowclone-favicon.ico" sizes=any>
-        <!-- <link rel=apple-touch-icon sizes=180x180 href=https://snowclone.xyz/apple-touch-icon.png>
-        <link rel=icon type=image/png sizes=32x32 href=https://snowclone.xyz/favicon-32x32.png>
-        <link rel=icon type=image/png sizes=16x16 href=https://snowclone.xyz/favicon-16x16.png>
-        <link rel=manifest crossorigin=use-credentials href=https://snowclone.xyz/site.webmanifest> -->
     </head>
     <body class="docs single">
         <div class=sticky-top>
-            <div class=header-bar></div>
             <header class="navbar navbar-expand-lg navbar-light doks-navbar">
                 <nav class="container-xxl flex-wrap flex-lg-nowrap" aria-label="Main navigation">
                     <a class="navbar-brand order-0 mb-2" href=../.. aria-label=Snowclone>
                         <img class=logo-light src="../../images/snowclone-full-logo.png" width=200px style="padding-top: 11px;">
-                        <img class="logo-dark d-none" src="../../images/snowclone-full-logo.png" width=200px style="padding-top: 11px;">
                     </a>
                     <button class="btn btn-link order-0 ms-auto d-lg-none" type=button data-bs-toggle=offcanvas data-bs-target=#offcanvasExample aria-controls=offcanvasExample>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
@@ -227,7 +42,6 @@
                         </svg>
                     </button>
                     <div class="offcanvas offcanvas-start d-lg-none" tabindex=-1 id=offcanvasExample aria-labelledby=offcanvasExampleLabel>
-                        <div class=header-bar></div>
                         <div class=offcanvas-header>
                             <h5 class=offcanvas-title id=offcanvasExampleLabel>Browse docs</h5>
                             <button type=button class=btn-close data-bs-dismiss=offcanvas aria-label=Close></button>
@@ -259,14 +73,6 @@
                                           <a class=docs-link href=../future-work>Future Work</a>
                                       </li>
                                   </ul>
-                                    <!-- <ul class=list-unstyled>
-                                        <li>
-                                            <a class=docs-link href=https://snowclone.xyz/documentations/quick-start/>Quick Start</a>
-                                        </li>
-                                        <li>
-                                            <a class=docs-link href=https://snowclone.xyz/documentations/otter-api/>Otter API</a>
-                                        </li>
-                                    </ul> -->
                                 </nav>
                             </aside>
                         </div>
@@ -279,7 +85,6 @@
                         </svg>
                     </button>
                     <div class="offcanvas offcanvas-end border-0 py-lg-1" tabindex=-1 id=offcanvasDoks data-bs-backdrop=true aria-labelledby=offcanvasDoksLabel>
-                        <div class="header-bar d-lg-none"></div>
                         <div class="offcanvas-header d-lg-none">
                             <h2 class="h5 offcanvas-title ps-2" id=offcanvasDoksLabel>
                                 <a class=text-dark href=../..>Snowclone</a>
@@ -289,21 +94,17 @@
                         <div class="offcanvas-body p-4 p-lg-0">
                             <ul class="nav flex-column flex-lg-row align-items-lg-center mt-2 mt-lg-0 ms-lg-2 me-lg-auto">
                                 <li class=nav-item>
-                                    <a class="nav-link ps-0 py-1" href=../Introduction>Case Study</a>
+                                    <a class="nav-link ps-0 py-1" href=../introduction>Case Study</a>
                                 </li>
                                 <li class=nav-item>
-                                    <a class="nav-link ps-0 py-1" href=https://snowclone.xyz/the-team/>About Us</a>
+                                    <a class="nav-link ps-0 py-1" href=../../about>About Us</a>
                                 </li>
                             </ul>
                             <hr class="text-black-50 my-4 d-lg-none">
-                            <!-- <form class="doks-search position-relative flex-grow-1 ms-lg-auto me-lg-2">
-                                <input id=search class="form-control is-search" type=search placeholder="Search docs..." aria-label="Search docs..." autocomplete=off>
-                                <div id=suggestions class="shadow bg-white rounded d-none"></div>
-                            </form> -->
                             <hr class="text-black-50 my-4 d-lg-none">
                             <ul class="nav flex-column flex-lg-row">
                                 <li class=nav-item>
-                                    <a class="nav-link social-link" href=https://github.com/snowclone>
+                                    <a class="nav-link social-link" href=https://github.com/snowclone-base>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f800c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github">
                                             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/>
                                         </svg>
@@ -312,26 +113,6 @@
                                 </li>
                             </ul>
                             <hr class="text-black-50 my-4 d-lg-none">
-                            <button id=mode class="btn btn-link" type=button aria-label="Toggle user interface mode">
-                                <span class=toggle-dark>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon">
-                                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-                                    </svg>
-                                </span>
-                                <span class=toggle-light>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun">
-                                        <circle cx="12" cy="12" r="5"/>
-                                        <line x1="12" y1="1" x2="12" y2="3"/>
-                                        <line x1="12" y1="21" x2="12" y2="23"/>
-                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                                        <line x1="1" y1="12" x2="3" y2="12"/>
-                                        <line x1="21" y1="12" x2="23" y2="12"/>
-                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                                    </svg>
-                                </span>
-                            </button>
                         </div>
                     </div>
                 </nav>
@@ -364,14 +145,6 @@
                           <a class=docs-link href=../future-work>Future Work</a>
                       </li>
                   </ul>
-                    <!-- <ul class=list-unstyled>
-                        <li>
-                            <a class=docs-link href=https://snowclone.xyz/documentations/quick-start/>Quick Start</a>
-                        </li>
-                        <li>
-                            <a class=docs-link href=https://snowclone.xyz/documentations/otter-api/>Otter API</a>
-                        </li>
-                    </ul> -->
                 </nav>
             </aside>
         </div>
@@ -404,14 +177,6 @@
                                     <a class=docs-link href=../future-work>Future Work</a>
                                 </li>
                             </ul>
-                            <!-- <ul class=list-unstyled>
-                                <li>
-                                    <a class=docs-link href=https://snowclone.xyz/documentations/quick-start/>Quick Start</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=https://snowclone.xyz/documentations/otter-api/>Otter API</a>
-                                </li> -->
-                            <!-- </ul> -->
                         </nav>
                     </div>
                     <nav class="docs-toc d-none d-xl-block col-xl-3" aria-label="Secondary navigation">
@@ -434,28 +199,16 @@
                             <div class=collapse id=onThisPage>
                                 <div class="card card-body mt-3 py-1">
                                     <div class=page-links>
-                                        <!-- <nav id=TableOfContents>
+                                        <nav id=TableOfContents>
                                             <ul>
-                                                <li>
-                                                    <a href=#the-reason-for-snowclone>Why Video Calling?</a>
-                                                </li>
-                                                <li>
-                                                    <a href=#snowclone-design-goals>P2P vs Client-Server Network Topologies</a>
-                                                    <ul>
-                                                        <li></li>
-                                                    </ul>
-                                                </li>
-                                                <li>
-                                                    <a href=#transport-protocols-in-context-of-video-calling>Transport Protocols in Context of Video Calling</a>
-                                                </li>
-                                                <li>
-                                                    <a href=#udp-based-p2p-video-calling-solutions>UDP-based, P2P Video Calling Solutions</a>
-                                                </li>
-                                                <li>
-                                                    <a href=#notes>Notes</a>
-                                                </li>
+                                              <li>
+                                                <a href=#designing-snowclone>Designing Snowclone</a>
+                                              </li>
+                                              <li>
+                                                <a href=#security>Security</a>
+                                              </li>
                                             </ul>
-                                        </nav> -->
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
@@ -554,10 +307,10 @@
         </div>
     </div>
 </footer>
-<script src=https://snowclone.xyz/js/bootstrap.min.87685cf4e6585276ff9e7b5d0b97e792615af6921e77821315d1ca7c5511ac2f30667e16c0d031e680ca8b57f63f6c0f6c4a232da777cce474b501ed81e090a9.js integrity="sha512-h2hc9OZYUnb/nntdC5fnkmFa9pIed4ITFdHKfFURrC8wZn4WwNAx5oDKi1f2P2wPbEojLad3zOR0tQHtgeCQqQ==" crossorigin=anonymous defer></script>
+<!-- <script src=https://snowclone.xyz/js/bootstrap.min.87685cf4e6585276ff9e7b5d0b97e792615af6921e77821315d1ca7c5511ac2f30667e16c0d031e680ca8b57f63f6c0f6c4a232da777cce474b501ed81e090a9.js integrity="sha512-h2hc9OZYUnb/nntdC5fnkmFa9pIed4ITFdHKfFURrC8wZn4WwNAx5oDKi1f2P2wPbEojLad3zOR0tQHtgeCQqQ==" crossorigin=anonymous defer></script>
 <script src=https://snowclone.xyz/js/highlight.min.56a414730f1135fe77b5ea30bf74a2cc4101a6f386e85e5b789c800570cc33d33054000f45932c053a59b41018f72687867254a80e1b9710671852492533162f.js integrity="sha512-VqQUcw8RNf53teowv3SizEEBpvOG6F5beJyABXDMM9MwVAAPRZMsBTpZtBAY9yaHhnJUqA4blxBnGFJJJTMWLw==" crossorigin=anonymous defer></script>
 <script src=https://snowclone.xyz/main.min.e428a7f44d6828affc2c7ba7ca7ab3e9d3516bd116d6d4754b3e429825cd7906b395766ff51cac75316172fe5f06903ae66fc8a9c2970a6e0fbda4f117831f9e.js integrity="sha512-5Cin9E1oKK/8LHunynqz6dNRa9EW1tR1Sz5CmCXNeQazlXZv9RysdTFhcv5fBpA65m/IqcKXCm4PvaTxF4Mfng==" crossorigin=anonymous defer></script>
-<script src=https://snowclone.xyz/index.min.c3d49af9fdb6ab0e7f47407e0c383660ee2978cc9c321148670f115d9c055c272250f335732c1264445e8a7b5bdc65e268fb76b946efe29f6f94dcbbc1df6d2d.js integrity="sha512-w9Sa+f22qw5/R0B+DDg2YO4peMycMhFIZw8RXZwFXCciUPM1cywSZEReintb3GXiaPt2uUbv4p9vlNy7wd9tLQ==" crossorigin=anonymous defer></script>
+<script src=https://snowclone.xyz/index.min.c3d49af9fdb6ab0e7f47407e0c383660ee2978cc9c321148670f115d9c055c272250f335732c1264445e8a7b5bdc65e268fb76b946efe29f6f94dcbbc1df6d2d.js integrity="sha512-w9Sa+f22qw5/R0B+DDg2YO4peMycMhFIZw8RXZwFXCciUPM1cywSZEReintb3GXiaPt2uUbv4p9vlNy7wd9tLQ==" crossorigin=anonymous defer></script> -->
 <div class="d-flex fixed-bottom pb-4 pb-lg-5 pe-4 pe-lg-5">
     <a id=toTop href=# class="btn btn-outline-primary rounded-circle ms-auto p-2">
         <span class=visually-hidden>Top</span>
