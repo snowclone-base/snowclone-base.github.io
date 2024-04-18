@@ -1,8 +1,4 @@
 {"version": 2, "width": 158, "height": 35, "timestamp": 1713460599, "env": {"SHELL": "/bin/zsh", "TERM": "xterm-256color"}}
-[4.470773, "o", "\u001b[?2004l\r\r\n"]
-[4.47857, "o", "\u001b[H\u001b[2J"]
-[4.479638, "o", "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                             \r \r"]
-[4.483145, "o", "\u001b]7;file://Alontes-Air/Users/lukepowers/downloads/code/snowclone-cli/src/sql\u0007"]
 [4.483426, "o", "\r\u001b[0m\u001b[27m\u001b[24m\u001b[Jlukepowers \u001b[K\u001b[?2004h"]
 [5.737927, "o", "s"]
 [8.258992, "o", "\bsn"]
@@ -7625,5 +7621,5 @@
 [467.486441, "o", " - Temporary Postgres Password:  \u001b[1m\u001b[38;5;86mpgPassword\u001b[39m\u001b[22m\r\n"]
 [467.491261, "o", "\u001b[1m\u001b[38;5;86m\u001b[39m\u001b[22m\r\n\u001b[1m\u001b[38;5;86mPlease make sure to change Postgres credentials before using in production.\u001b[39m\u001b[22m\r\n"]
 [467.491341, "o", "\u001b[1m\u001b[38;5;86m\u001b[39m\u001b[22m\r\n\u001b[1m\u001b[38;5;86mThese values can also be found in your DynamoDB.\u001b[39m\u001b[22m\r\n"]
-[515.495685, "o", "\u001b[?25h"]
-[515.660759, "o", "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                             \r \r"]
+[560.495685, "o", "\u001b[?25h"]
+[560.660759, "o", "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                             \r \r"]
