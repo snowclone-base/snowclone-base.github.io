@@ -1,317 +1,502 @@
 <!doctype html>
 <html lang=en-us>
-    <head>
-        <meta charset=utf-8>
-        <meta http-equiv=x-ua-compatible content="ie=edge">
-        <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-        <link rel=stylesheet href="../../styles/casestudy.css">
-        <noscript>
-            <style>
-                img.lazyload {
-                    display: none
-                }
-            </style>
-        </noscript>
-        <meta name=robots content="index, follow">
-        <meta name=googlebot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-        <meta name=bingbot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-        <title>Snowclone Design</title>
-        <meta name=description content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
-        <link rel=canonical href=https://snowclone-base.github.io/casestudy/snowclone-design>
-        <meta property="og:locale" content="en_US">
-        <meta property="og:type" content="article">
-        <meta property="og:title" content="Snowclone Design">
-        <meta property="og:description" content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
-        <meta property="og:url" content=https://snowclone-base.github.io/casestudy/snowclone-design>
-        <meta property="og:site_name" content="Snowclone">
-        <meta name=theme-color content="#fff">
-        <link rel=icon href="../../images/snowclone-favicon.ico" sizes=any>
-    </head>
-    <body class="docs single">
-        <div class=sticky-top>
-            <header class="navbar navbar-expand-lg navbar-light doks-navbar">
-                <nav class="container-xxl flex-wrap flex-lg-nowrap" aria-label="Main navigation">
-                    <a class="navbar-brand order-0 mb-2" href=../.. aria-label=Snowclone>
-                        <img class=logo-light src="../../images/snowclone-full-logo.png" width=200px style="padding-top: 11px;">
-                    </a>
-                    <button class="btn btn-link order-0 ms-auto d-lg-none" type=button data-bs-toggle=offcanvas data-bs-target=#offcanvasExample aria-controls=offcanvasExample>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
-                            <circle cx="12" cy="12" r="1"/>
-                            <circle cx="19" cy="12" r="1"/>
-                            <circle cx="5" cy="12" r="1"/>
-                        </svg>
-                    </button>
-                    <div class="offcanvas offcanvas-start d-lg-none" tabindex=-1 id=offcanvasExample aria-labelledby=offcanvasExampleLabel>
-                        <div class=offcanvas-header>
-                            <h5 class=offcanvas-title id=offcanvasExampleLabel>Browse docs</h5>
-                            <button type=button class=btn-close data-bs-dismiss=offcanvas aria-label=Close></button>
-                        </div>
-                        <div class=offcanvas-body>
-                            <aside class="doks-sidebar mt-n3">
-                                <nav id=doks-docs-nav aria-label="Tertiary navigation">
-                                    <h3 class="h6 text-uppercase mb-2">Case Study</h3>
-                                    <ul class=list-unstyled>
-                                      <li>
-                                          <a class=docs-link href=../introduction>Introduction</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../baas>BaaS</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../existing-solutions>Existing Solutions</a>
-                                      </li>
-                                      <li>
-                                          <a class="docs-link active" href=../snowclone-design>Snowclone Design</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../cloud-deployment>Cloud Deployment</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../future-work>Future Work</a>
-                                      </li>
-                                  </ul>
-                                </nav>
-                            </aside>
-                        </div>
-                    </div>
-                    <button class="btn btn-menu order-2 d-block d-lg-none" type=button data-bs-toggle=offcanvas data-bs-target=#offcanvasDoks aria-controls=offcanvasDoks aria-label="Open main menu">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
-                            <line x1="3" y1="12" x2="21" y2="12"/>
-                            <line x1="3" y1="6" x2="21" y2="6"/>
-                            <line x1="3" y1="18" x2="21" y2="18"/>
-                        </svg>
-                    </button>
-                    <div class="offcanvas offcanvas-end border-0 py-lg-1" tabindex=-1 id=offcanvasDoks data-bs-backdrop=true aria-labelledby=offcanvasDoksLabel>
-                        <div class="offcanvas-header d-lg-none">
-                            <h2 class="h5 offcanvas-title ps-2" id=offcanvasDoksLabel>
-                                <a class=text-dark href=../..>Snowclone</a>
-                            </h2>
-                            <button type=button class="btn-close text-reset me-2" data-bs-dismiss=offcanvas aria-label="Close main menu"></button>
-                        </div>
-                        <div class="offcanvas-body p-4 p-lg-0">
-                            <ul class="nav flex-column flex-lg-row align-items-lg-center mt-2 mt-lg-0 ms-lg-2 me-lg-auto">
-                                <li class=nav-item>
-                                    <a class="nav-link ps-0 py-1" href=../introduction>Case Study</a>
-                                </li>
-                                <li class=nav-item>
-                                    <a class="nav-link ps-0 py-1" href=../../about>About Us</a>
-                                </li>
-                            </ul>
-                            <hr class="text-black-50 my-4 d-lg-none">
-                            <hr class="text-black-50 my-4 d-lg-none">
-                            <ul class="nav flex-column flex-lg-row">
-                                <li class=nav-item>
-                                    <a class="nav-link social-link" href=https://github.com/snowclone-base>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f800c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github">
-                                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/>
-                                        </svg>
-                                        <small class="ms-2 d-lg-none">GitHub</small>
-                                    </a>
-                                </li>
-                            </ul>
-                            <hr class="text-black-50 my-4 d-lg-none">
-                        </div>
-                    </div>
-                </nav>
-            </header>
-        </div>
-        <div class=container-xxl>
-            <aside class=doks-sidebar>
-                <nav id=doks-docs-nav class="collapse d-lg-none" aria-label="Tertiary navigation">
-                    <h3 class="h6 text-uppercase mb-2">Case Study</h3>
-                    <ul class=list-unstyled>
-                      <li>
-                          <a class=docs-link href=../introduction>Introduction</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../baas>BaaS</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../existing-solutions>Existing Solutions</a>
-                      </li>
-                      <li>
-                          <a class="docs-link active" href=../snowclone-design>Snowclone Design</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../cloud-deployment>Cloud Deployment</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../future-work>Future Work</a>
-                      </li>
-                  </ul>
-                </nav>
-            </aside>
-        </div>
-        <div class="wrap container-xxl" role=document>
-            <div class=content>
-                <div class="row flex-xl-nowrap">
-                    <div class="col-lg-4 col-xl-3 docs-sidebar d-none d-lg-block">
-                        <nav id=sidebar-default class=docs-links aria-label="Main navigation">
-                            <h3 class="h6 text-uppercase mb-2">Case Study</h3>
-                            <ul class=list-unstyled>
-                                <li>
-                                    <a class=docs-link href=../introduction>Introduction</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../baas>BaaS</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../existing-solutions>Existing Solutions</a>
-                                </li>
-                                <li>
-                                    <a class="docs-link active" href=../snowclone-design>Snowclone Design</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../cloud-deployment>Cloud Deployment</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../future-work>Future Work</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <nav class="docs-toc d-none d-xl-block col-xl-3" aria-label="Secondary navigation">
-                        <div class=d-xl-none>
-                            <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button data-bs-toggle=collapse data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false aria-label="Toggle On this page navigation">
-                                <span>On this page</span>
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <title>Expand</title>
-                                        <polyline points="7 13 12 18 17 13"/>
-                                        <polyline points="7 6 12 11 17 6"/>
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <title>Collapse</title>
-                                        <polyline points="17 11 12 6 7 11"/>
-                                        <polyline points="17 18 12 13 7 18"/>
-                                    </svg>
-                                </span>
-                            </button>
-                            <div class=collapse id=onThisPage>
-                                <div class="card card-body mt-3 py-1">
-                                    <div class=page-links>
-                                        <nav id=TableOfContents>
-                                            <ul>
-                                              <li>
-                                                <a href=#designing-snowclone>Designing Snowclone</a>
-                                              </li>
-                                              <li>
-                                                <a href=#security>Security</a>
-                                              </li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="page-links d-none d-xl-block">
-                            <h3>On this page</h3>
-                            <nav id=TableOfContents>
-                                <ul>
-                                    <li>
-                                        <a href=#designing-snowclone>Designing Snowclone</a>
-                                    </li>
-                                    <li>
-                                        <a href=#security>Security</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </nav>
-                    <main class="docs-content col-lg-12 col-xl-10">
-                        <h1>Snowclone Design</h1>
-                        <p class=lead></p>
-                        <nav class=d-xl-none aria-label="Quaternary navigation">
-                            <div class=d-xl-none>
-                                <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button data-bs-toggle=collapse data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false aria-label="Toggle On this page navigation">
-                                    <span>On this page</span>
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <title>Expand</title>
-                                            <polyline points="7 13 12 18 17 13"/>
-                                            <polyline points="7 6 12 11 17 6"/>
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <title>Collapse</title>
-                                            <polyline points="17 11 12 6 7 11"/>
-                                            <polyline points="17 18 12 13 7 18"/>
-                                        </svg>
-                                    </span>
-                                </button>
-                                <div class=collapse id=onThisPage>
-                                    <div class="card card-body mt-3 py-1">
-                                        <div class=page-links>
-                                            <nav id=TableOfContents>
-                                                <ul>
-                                                    <li>
-                                                        <a href=#designing-snowclone>Designing Snowclone</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href=#security>Security</a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="page-links d-none d-xl-block">
-                                <h3>On this page</h3>
-                                <nav id=TableOfContents>
-                                    <ul>
-                                        <li>
-                                          <a href=#designing-snowclone>Designing Snowclone</a>
-                                        </li>
-                                        <li>
-                                          <a href=#security>Security</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </nav>
-                        <h2 id=designing-snowclone>
-                          Designing Snowclone <a href=#designing-snowclone class=anchor aria-hidden=true>#</a>
-                        </h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        <h2 id=security>
-                          Security <a href=#security class=anchor aria-hidden=true>#</a>
-                        </h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between"></div>
-                            <div class="docs-navigation d-flex justify-content-between">
-                                <a href=../existing-solutions>
-                                    <div class="card my-1">
-                                        <div class="card-body py-2">&larr; Existing Solutions</div>
-                                    </div>
-                                </a>
-                                <a class=ms-auto href=../cloud-deployment>
-                                    <div class="card my-1">
-                                        <div class="card-body py-2">Cloud Deployment &rarr;</div>
-                                    </div>
-                                </a>
-</div></main></div></div></div>
-<footer class="footer text-muted">
-    <div class=container-xxl>
-        <div class=row>
-            <div class="col-lg-8 order-last order-lg-first">
-                <ul class=list-inline>
-                    <li class=list-inline-item>
-                        Powered by coffee and snowcones
-                    </li>
+
+<head>
+  <meta charset=utf-8>
+  <meta http-equiv=x-ua-compatible content="ie=edge">
+  <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <link rel=stylesheet href="../../styles/casestudy.css">
+  <noscript>
+    <style>
+      img.lazyload {
+        display: none
+      }
+    </style>
+  </noscript>
+  <meta name=robots content="index, follow">
+  <meta name=googlebot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name=bingbot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <title>Snowclone Design</title>
+  <meta name=description
+    content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
+  <link rel=canonical href=https://snowclone-base.github.io/casestudy/snowclone-design>
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Snowclone Design">
+  <meta property="og:description"
+    content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
+  <meta property="og:url" content=https://snowclone-base.github.io/casestudy/snowclone-design>
+  <meta property="og:site_name" content="Snowclone">
+  <meta name=theme-color content="#fff">
+  <link rel=icon href="../../images/snowclone-favicon.ico" sizes=any>
+</head>
+
+<body class="docs single">
+  <div class=sticky-top>
+    <header class="navbar navbar-expand-lg navbar-light doks-navbar">
+      <nav class="container-xxl flex-wrap flex-lg-nowrap" aria-label="Main navigation">
+        <a class="navbar-brand order-0 mb-2" href=../.. aria-label=Snowclone>
+          <img class=logo-light src="../../images/snowclone-full-logo.png" width=200px style="padding-top: 11px;">
+        </a>
+        <button class="btn btn-link order-0 ms-auto d-lg-none" type=button data-bs-toggle=offcanvas
+          data-bs-target=#offcanvasExample aria-controls=offcanvasExample>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-more-horizontal">
+            <circle cx="12" cy="12" r="1" />
+            <circle cx="19" cy="12" r="1" />
+            <circle cx="5" cy="12" r="1" />
+          </svg>
+        </button>
+        <div class="offcanvas offcanvas-start d-lg-none" tabindex=-1 id=offcanvasExample
+          aria-labelledby=offcanvasExampleLabel>
+          <div class=offcanvas-header>
+            <h5 class=offcanvas-title id=offcanvasExampleLabel>Browse docs</h5>
+            <button type=button class=btn-close data-bs-dismiss=offcanvas aria-label=Close></button>
+          </div>
+          <div class=offcanvas-body>
+            <aside class="doks-sidebar mt-n3">
+              <nav id=doks-docs-nav aria-label="Tertiary navigation">
+                <h3 class="h6 text-uppercase mb-2">Case Study</h3>
+                <ul class=list-unstyled>
+                  <li>
+                    <a class=docs-link href=../introduction>Introduction</a>
+                  </li>
+                  <li>
+                    <a class=docs-link href=../baas>BaaS</a>
+                  </li>
+                  <li>
+                    <a class=docs-link href=../existing-solutions>Existing Solutions</a>
+                  </li>
+                  <li>
+                    <a class="docs-link active" href=../snowclone-design>Snowclone Design</a>
+                  </li>
+                  <li>
+                    <a class=docs-link href=../cloud-deployment>Cloud Deployment</a>
+                  </li>
+                  <li>
+                    <a class=docs-link href=../future-work>Future Work</a>
+                  </li>
                 </ul>
-            </div>
-            <div class="col-lg-8 order-first order-lg-last text-lg-end">
-                <ul class=list-inline></ul>
-            </div>
+              </nav>
+            </aside>
+          </div>
         </div>
+        <button class="btn btn-menu order-2 d-block d-lg-none" type=button data-bs-toggle=offcanvas
+          data-bs-target=#offcanvasDoks aria-controls=offcanvasDoks aria-label="Open main menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-menu">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <div class="offcanvas offcanvas-end border-0 py-lg-1" tabindex=-1 id=offcanvasDoks data-bs-backdrop=true
+          aria-labelledby=offcanvasDoksLabel>
+          <div class="offcanvas-header d-lg-none">
+            <h2 class="h5 offcanvas-title ps-2" id=offcanvasDoksLabel>
+              <a class=text-dark href=../..>Snowclone</a>
+            </h2>
+            <button type=button class="btn-close text-reset me-2" data-bs-dismiss=offcanvas
+              aria-label="Close main menu"></button>
+          </div>
+          <div class="offcanvas-body p-4 p-lg-0">
+            <div class="ms-auto">
+              <ul class="nav flex-column flex-lg-row align-items-lg-center mt-2 mt-lg-0 ms-lg-2 me-lg-auto">
+                <li class=nav-item>
+                  <a class="nav-link ps-0 py-1" href=/casestudy/introduction>Case Study</a>
+                </li>
+                <li class=nav-item>
+                  <a class="nav-link ps-0 py-1"
+                    href="https://github.com/snowclone-base/snowclone?tab=readme-ov-file#readme">Documentation</a>
+                </li>
+                <li class=nav-item>
+                  <a class="nav-link ps-0 py-1" href=/about>About Us</a>
+                </li>
+              </ul>
+            </div>
+            <hr class="text-black-50 my-4 d-lg-none">
+            <hr class="text-black-50 my-4 d-lg-none">
+            <ul class="nav flex-column flex-lg-row">
+              <li class=nav-item>
+                <a class="nav-link social-link" href=https://github.com/snowclone-base>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                    stroke="#f800c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-github" style="padding-bottom:10px">
+                    <path
+                      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22" />
+                  </svg>
+                  <small class="ms-2 d-lg-none">GitHub</small>
+                </a>
+              </li>
+            </ul>
+            <hr class="text-black-50 my-4 d-lg-none">
+          </div>
+        </div>
+      </nav>
+    </header>
+  </div>
+  <div class=container-xxl>
+    <aside class=doks-sidebar>
+      <nav id=doks-docs-nav class="collapse d-lg-none" aria-label="Tertiary navigation">
+        <h3 class="h6 text-uppercase mb-2">Case Study</h3>
+        <ul class=list-unstyled>
+          <li>
+            <a class=docs-link href=../introduction>Introduction</a>
+          </li>
+          <li>
+            <a class=docs-link href=../baas>BaaS</a>
+          </li>
+          <li>
+            <a class=docs-link href=../existing-solutions>Existing Solutions</a>
+          </li>
+          <li>
+            <a class="docs-link active" href=../snowclone-design>Snowclone Design</a>
+          </li>
+          <li>
+            <a class=docs-link href=../cloud-deployment>Cloud Deployment</a>
+          </li>
+          <li>
+            <a class=docs-link href=../future-work>Future Work</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <div class="wrap container-xxl" role=document>
+    <div class=content>
+      <div class="row flex-xl-nowrap">
+        <div class="col-lg-4 col-xl-3 docs-sidebar d-none d-lg-block">
+          <nav id=sidebar-default class=docs-links aria-label="Main navigation">
+            <h3 class="h6 text-uppercase mb-2">Case Study</h3>
+            <ul class=list-unstyled>
+              <li>
+                <a class=docs-link href=../introduction>Introduction</a>
+              </li>
+              <li>
+                <a class=docs-link href=../baas>BaaS</a>
+              </li>
+              <li>
+                <a class=docs-link href=../existing-solutions>Existing Solutions</a>
+              </li>
+              <li>
+                <a class="docs-link active" href=../snowclone-design>Snowclone Design</a>
+              </li>
+              <li>
+                <a class=docs-link href=../cloud-deployment>Cloud Deployment</a>
+              </li>
+              <li>
+                <a class=docs-link href=../future-work>Future Work</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <nav class="docs-toc d-none d-xl-block col-xl-3" aria-label="Secondary navigation">
+          <div class=d-xl-none>
+            <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button data-bs-toggle=collapse
+              data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false
+              aria-label="Toggle On this page navigation">
+              <span>On this page</span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                  class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <title>Expand</title>
+                  <polyline points="7 13 12 18 17 13" />
+                  <polyline points="7 6 12 11 17 6" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                  class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <title>Collapse</title>
+                  <polyline points="17 11 12 6 7 11" />
+                  <polyline points="17 18 12 13 7 18" />
+                </svg>
+              </span>
+            </button>
+            <div class=collapse id=onThisPage>
+              <div class="card card-body mt-3 py-1">
+                <div class=page-links>
+                  <nav id=TableOfContents>
+                    <ul>
+                      <li>
+                        <a href=#designing-snowclone>Designing Snowclone</a>
+                      </li>
+                      <li>
+                        <a href=#security>Security</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page-links d-none d-xl-block">
+            <h3>On this page</h3>
+            <nav id=TableOfContents>
+              <ul>
+                <li>
+                  <a href=#designing-snowclone>Designing Snowclone</a>
+                </li>
+                <li>
+                  <a href=#security>Security</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </nav>
+        <main class="docs-content col-lg-12 col-xl-10">
+          <h1>Snowclone Design</h1>
+          <p class=lead></p>
+          <nav class=d-xl-none aria-label="Quaternary navigation">
+            <div class=d-xl-none>
+              <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button
+                data-bs-toggle=collapse data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false
+                aria-label="Toggle On this page navigation">
+                <span>On this page</span>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <title>Expand</title>
+                    <polyline points="7 13 12 18 17 13" />
+                    <polyline points="7 6 12 11 17 6" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <title>Collapse</title>
+                    <polyline points="17 11 12 6 7 11" />
+                    <polyline points="17 18 12 13 7 18" />
+                  </svg>
+                </span>
+              </button>
+              <div class=collapse id=onThisPage>
+                <div class="card card-body mt-3 py-1">
+                  <div class=page-links>
+                    <nav id=TableOfContents>
+                      <ul>
+                        <li>
+                          <a href=#designing-snowclone>Designing Snowclone</a>
+                        </li>
+                        <li>
+                          <a href=#security>Security</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="page-links d-none d-xl-block">
+              <h3>On this page</h3>
+              <nav id=TableOfContents>
+                <ul>
+                  <li>
+                    <a href=#designing-snowclone>Designing Snowclone</a>
+                  </li>
+                  <li>
+                    <a href=#security>Security</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </nav>
+          <h2 id=designing-snowclone>
+            Designing Snowclone <a href=#designing-snowclone class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>To fulfill our primary design goals, we needed to provide our users with a database, a CRUD API, API
+            documentation, and a service for real-time notifications. We also needed to provide a way for the user to
+            deploy this stack using a single command. Finally, we needed to ensure database security and API
+            authentication.</p>
+          <h3 id=the-database>
+            The Database
+          </h3>
+          <p>
+            We opted for <strong>PostgreSQL</strong> (Postgres) as our relational database solution due to its
+            extensive documentation
+            and active support within the developer community. In addition, we used Postgres' database roles
+            functionality to secure the database against unauthorized access. Postgres also comes with a
+            <code>LISTEN/NOTIFY</code>
+            feature that allows its users to attach listeners to table changes. This enabled us to turn on our realtime
+            notifications functionality.
+          </p>
+          <h3 id=schema-uploads>
+            Schema Uploads
+          </h3>
+          <p>
+            With a database in place, the user needs to be able to define the schema for that database. Once the
+            database is deployed, the user can log into Postgres and run SQL commands to define their schema manually.
+            However, this is a hassle and we wanted to find a solution with better usability.
+
+            To solve this, we created an API endpoint for uploading .sql files. These files can contain the commands to
+            define schema, change schema (schema migration), and add functions, such as listeners. We implemented this
+            via an express server that enables users to send an HTTP POST request to “/schema” with a .sql file. We call
+            this the “<strong>schema server</strong>.” The schema server reads the file, parses it, and sends the SQL
+            commands
+            against the database. Thus, the “Give me a SQL file…” part of our main objective was fulfilled.
+
+            To secure the server, we used a secret API token that only the developer has access to. The schema server
+            only accepts requests with an authentication header containing this token.
+          </p>
+          <h3 id=crud-api>
+            CRUD API
+          </h3>
+          <p>
+            With the database and schema in place, users need to be able to perform CRUD (Create, Read, Update, Delete)
+            operations from their frontend app. Since one of our design goals was to offload as much setup work from our
+            users as possible, we chose to use PostgREST to help users automatically set up their CRUD endpoints.
+          </p>
+          <figure>
+            <img src="../../images/sql-postgrest.png" alt="PostgREST">
+            <figcaption>PostgREST introspects the database and automatically creates CRUD routes</figcaption>
+          </figure>
+          <p>
+            PostgREST is an out-of-the-box API server that automatically generates a REST API from a Postgres database.
+            It does this by leveraging the database's structure and mapping HTTP methods to SQL operations (for example,
+            a POST request maps to INSERT INTO a table). Thus, once our user uploads their schema, PostgREST
+            automatically provides the CRUD API without the need to write custom endpoints—another design goal checked
+            off!
+          </p>
+          <h3 id=api-documentation>
+            API Documentation
+          </h3>
+          <p>
+            PostgREST's strength of automatically creating API endpoints presented us with the next challenge. If you
+            didn't write the endpoints, how will you know how to access them? PostgREST automatically serves an OpenAPI
+            description document in its root path. This document is a machine-readable description of the PostgREST API,
+            detailing endpoints, request/response formats, and other specifications to facilitate API consumption. Its
+            format (typically JSON) is easy to read for machines, but less so for human developers.
+          </p>
+          <img src="../../images/swagger.png" alt="Swagger UI">
+          <p>
+            We chose <strong>Swagger UI</strong>, an open-source API generator, due to its usability and broad
+            compatibility. The
+            Swagger UI server reads the OpenAPI document generated by PostgREST and generates a user-friendly and
+            interactive web-based dashboard for API documentation.
+          </p>
+          <h3 id=notifications>
+            Notifications
+          </h3>
+          <p>
+            Next, we tackled a key component of our design goals: real-time notifications. To enable notifications, we
+            needed a way to listen to database changes and send a notification that the frontend app could subscribe to.
+            The two options we considered were Web Sockets and Server-Sent Events (SSE).
+          </p>
+          <p>
+            Web Sockets support two-way communication between a client and a server, while SSE is a one-way
+            communication technology that enables a server to send updates to a client over a single, long-lived HTTP
+            connection. Both are used to enable real-time notifications. The primary difference between the two lies in
+            their bidirectional vs. unidirectional nature. Web Sockets are like walkie-talkies, whereas SSE is like a
+            radio.
+          </p>
+          <p>
+            For our use case, we chose SSE, given that notifications only need to flow one way (from the server to the
+            client). As shown in the graphic below, clients send their updates to the RESTful API server, those updates
+            get added to the database, which triggers a notification to the “event server,” and then the event server
+            broadcasts notifications to clients that are subscribed to it via a “/realtime” endpoint. The clients can
+            effectively communicate with each other by sending messages to the RESTful API, and then listening on the
+            “radio” of the event server.
+          </p>
+          <figure style="display: block; margin: 0 auto; text-align: center;">
+            <img src="../../images/realtime.gif" alt="Realtime Notifications" style="display: block; margin: 0 auto;">
+            <figcaption>Updates to the database are sent to all clients subscribed to changes. </figcaption>
+          </figure>
+          <p>
+            That leads to the question, how does the database know when and what to send notifications based on?
+            Postgres' <code>LISTEN/NOTIFY</code> feature and our schema server combined to answer this question. On
+            Postgres, users
+            can write functions to have the database send a notification whenever an insertion, update, or deletion
+            occurs (such as an update to the “messages” table for a chat app). However, this would again require
+            manually connecting to the Postgres database and executing commands.
+          </p>
+          <p>
+            Since we already have a schema server, we can leverage it to solve this problem as well. Just as we used it
+            for schema uploads, we can use it to enable the uploads of listener function definitions as well. This way,
+            users can upload their custom listeners according to the specific needs of their applications.
+          </p>
+          <h3 id=deployment>
+            Deployment
+          </h3>
+          <p>
+            With all the above pieces in place, the next step was to package them up and allow the user to deploy them
+            using a single command.
+          </p>
+          <p>
+            To accomplish this, we containerized all of our services, uploaded them to Dockerhub, and wrote a
+            docker-compose file with the necessary configurations to download and run the images. Thus, with a single
+            <code>docker compose up</code> command, Snowclone delivers a backend with all of its services to a local
+            docker
+            environment.
+          </p>
+          <img src="../../images/docker-compose.png" alt="Docker Compose">
+          <p>
+            Once deployed, here is what our microservices architecture looks like. The user specifies their data model
+            by uploading schema into the database via the schema server. They then can upload a listener file to define
+            events that will generate notifications. The frontend app can now send requests to the PostgREST server and
+            subscribe to notifications via the event server using the “/realtime” endpoint.
+          </p>
+          <p>
+            Once deployed, here is what our microservices architecture looks like. The user specifies their data model
+            by uploading schema into the database via the schema server. They then can upload a listener file to define
+            events that will generate notifications. The frontend app can now send requests to the PostgREST server and
+            subscribe to notifications via the event server using the “/realtime” endpoint.
+          </p>
+          <img src="../../images/snowclone-architecture.png" alt="Snowclone Architecture">
+          <h2 id=security>
+            Security <a href=#security class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.</p>
+          <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between"></div>
+          <div class="docs-navigation d-flex justify-content-between">
+            <a href=../existing-solutions>
+              <div class="card my-1">
+                <div class="card-body py-2">&larr; Existing Solutions</div>
+              </div>
+            </a>
+            <a class=ms-auto href=../cloud-deployment>
+              <div class="card my-1">
+                <div class="card-body py-2">Cloud Deployment &rarr;</div>
+              </div>
+            </a>
+          </div>
+        </main>
+      </div>
     </div>
-<script src=../../scripts/bootstrap.js crossorigin=anonymous defer></script>
-<div class="d-flex fixed-bottom pb-4 pb-lg-5 pe-4 pe-lg-5">
+  </div>
+  <footer class="footer text-muted">
+    <div class=container-xxl>
+      <div class=row>
+        <div>
+          <ul class=list-inline style="text-align: center">
+            <li>
+              <img src="../../images/snowclone-icon.png" class="img-fluid" alt="Snowclone logo"
+                style="width:56px;margin:8px">
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-8 order-first order-lg-last text-lg-end">
+          <ul class=list-inline></ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src=../../scripts/bootstrap.js crossorigin=anonymous defer></script>
+  <div class="d-flex fixed-bottom pb-4 pb-lg-5 pe-4 pe-lg-5">
     <a id=toTop href=# class="btn btn-outline-primary rounded-circle ms-auto p-2">
-        <span class=visually-hidden>Top</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
-            <polyline points="18 15 12 9 6 15"/>
-        </svg>
+      <span class=visually-hidden>Top</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="feather feather-chevron-up">
+        <polyline points="18 15 12 9 6 15" />
+      </svg>
     </a>
-</div>
-</body></html>
+  </div>
+</body>
+
+</html>
