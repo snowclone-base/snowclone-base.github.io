@@ -443,7 +443,8 @@
                   class="footnote-ref" role="doc-noteref">1</a></sup></figcaption>
           </figure>
           <p>One challenge we encountered when provisioning Snowclone’s API servers was handling environment variables.
-            When Snowclone is run locally, these variables could be safely stored in a separate .env file and referenced
+            When Snowclone is run locally, these variables could be safely stored in a separate <code>.env</code> file
+            and referenced
             in our docker-compose file. However, for AWS, these values needed to be defined in our ECS task definitions,
             and transmitting these plain text values over the network was unacceptable from a security perspective.</p>
           <p>AWS Secrets Manager proved a useful solution. This process will be more thoroughly covered in later
@@ -499,7 +500,7 @@
             the API services can talk to the database, and the database can only talk to those API services. This
             lockdown of communications was achieved via AWS security groups. Security groups can be thought of as
             virtual firewalls for each AWS resource deployed in one’s VPC, as they control the ingress and egress of
-            traffic to that resource. As will be discussed later, security groups also allow multiple backends to exist
+            traffic to that resource. Security groups also allow multiple backends to exist
             on the same private subnet. Each backend has its own security groups; thus the API servers for Backend-A can
             only talk to the database for Backend-A, not Backend-B.</p>
           <p>However, we ran into an issue with our API services once we placed them on a private subnet: our Docker
@@ -517,12 +518,12 @@
             the
             route table for our private subnet is configured to send any non-local requests to the NAT. Containers could
             now send outbound requests to the internet (e.g. Docker Hub), but inbound traffic through the NAT and into
-            the private subnet is locked down, only allowing responses to the containers's requests.</p>
+            the private subnet is locked down, with only responses to the containers's requests allowed.</p>
           <figure>
             <img src="../../images/natGateway.png"
-              alt="Egress traffic flows from private subnet to NAT Gateway in public subnet">
+              alt="Egress traffic flows from private subnet to NAT gateway in public subnet">
             <figcaption>
-              Traffic from the private subnet egresses through the NAT Gateway to access resources on the Internet
+              Traffic from the private subnet egresses through the NAT gateway to access resources on the Internet
             </figcaption>
           </figure>
           <p>One drawback to this solution is the <a href="https://aws.amazon.com/vpc/pricing/">cost of an AWS NAT at
@@ -536,7 +537,8 @@
             Docker Hub to host our container images, we could eliminate the need for our private subnet to connect to
             the internet at all. All such container-related configuration/provisioning/logging traffic could stay inside
             AWS.</p>
-          <p>With a view to simplicity, our current solution opts for utilizing fewer AWS resources.</p>
+          <p>However, each connection to an AWS service would require its own VPC endpoint. In pursuit of simplicity,
+            we chose to utilize fewer AWS resources by implementing the NAT gateway in our solution.</p>
           <h2 id=https>
             HTTPS<a href=#https class=anchor aria-hidden=true>#</a>
           </h2>
@@ -578,7 +580,7 @@
           <figure>
             <img src="../../images/snowclone-init.png"
               alt="Diagram of AWS resources provisioned by running CLI command 'snowclone init'">
-            <figcaption>Admin infrastructure provisioned by running <code>snowclone init</code>. One NAT Gateway is
+            <figcaption>Admin infrastructure provisioned by running <code>snowclone init</code>. One NAT gateway is
               provisioned in
               one Availability Zone for cost purposes</figcaption>
           </figure>
@@ -662,13 +664,13 @@
               <li id="fn:1">
                 <p>We provisioned two services in our Fargate cluster since it was necessary to decouple the PostgREST
                   task from the schema upload task. This was a catch-22 situation where the postgREST task failed
-                  because it couldn’t log into the database, which caused the entire service to fail, which included the
-                  schema task we needed to upload a SQL file that created credentials for postgREST to log into the
-                  database. With postgREST failing in its own service, the schema task stayed up and we could upload our
-                  login SQL file. PostgREST could now log into the database, and all services now passed their health
-                  checks.
+                  because it couldn’t log into the database, which caused the entire service to fail. This failed
+                  service included the schema task, through which we needed to upload the SQL file that created
+                  credentials for postgREST to log into the database. With postgREST moved to its own service, the
+                  schema task stayed up and we could upload our login SQL file. PostgREST could now log into the
+                  database, and all services passed their health checks.
 
-                <p>Our schema and real-time servers are deployed on a single ECS service. This decision was made to
+                <p>Our schema and realtime servers are deployed on a single ECS service. This decision was made to
                   minimize the amount of AWS resources, and a reasonable idea for future work would be to break the
                   realtime task out into its own service to facilitate scalability.</p>&nbsp;<a href="#fnref:1"
                   class="footnote-backref" role="doc-backlink">↩︎</a>
@@ -691,8 +693,8 @@
                   VPC.&nbsp;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">↩︎</a></p>
               </li>
               <li id="fn:4">
-                <p>Our real-time server’s code needed a tweak once deployed to AWS. ALBs on AWS have a default idle
-                  timeout of 60 seconds. Anytime a client connected to our real-time server exceeded this span without
+                <p>Our realtime server’s code needed a tweak once deployed to AWS. ALBs on AWS have a default idle
+                  timeout of 60 seconds. Anytime a client connected to our realtime server exceeded this span without
                   receiving a Server-Sent Event (SSE) the ALB terminated the connection. Our solution was for our server
                   to send a keep-alive message every 30 seconds.&nbsp;<a href="#fnref:4" class="footnote-backref"
                     role="doc-backlink">↩︎</a></p>
