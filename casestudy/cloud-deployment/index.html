@@ -1,428 +1,769 @@
 <!doctype html>
 <html lang=en-us>
-    <head>
-        <meta charset=utf-8>
-        <meta http-equiv=x-ua-compatible content="ie=edge">
-        <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-        <link rel=stylesheet href="../../styles/casestudy.css">
-        <noscript>
-            <style>
-                img.lazyload {
-                    display: none
-                }
-            </style>
-        </noscript>
-        <meta name=robots content="index, follow">
-        <meta name=googlebot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-        <meta name=bingbot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-        <title>Cloud Deployment</title>
-        <meta name=description content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
-        <link rel=canonical href=https://snowclone-base.github.io/casestudy/snowclone-design>
-        <meta property="og:locale" content="en_US">
-        <meta property="og:type" content="article">
-        <meta property="og:title" content="Snowclone Design">
-        <meta property="og:description" content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
-        <meta property="og:url" content=https://snowclone-base.github.io/casestudy/snowclone-design>
-        <meta property="og:site_name" content="Snowclone">
-        <meta name=theme-color content="#fff">
-        <link rel=icon href="../../images/snowclone-favicon.ico" sizes=any>
-    </head>
-    <body class="docs single">
-        <div class=sticky-top>
-            <header class="navbar navbar-expand-lg navbar-light doks-navbar">
-                <nav class="container-xxl flex-wrap flex-lg-nowrap" aria-label="Main navigation">
-                    <a class="navbar-brand order-0 mb-2" href=../.. aria-label=Snowclone>
-                        <img class=logo-light src="../../images/snowclone-full-logo.png" width=200px style="padding-top: 11px;">
-                    </a>
-                    <button class="btn btn-link order-0 ms-auto d-lg-none" type=button data-bs-toggle=offcanvas data-bs-target=#offcanvasExample aria-controls=offcanvasExample>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
-                            <circle cx="12" cy="12" r="1"/>
-                            <circle cx="19" cy="12" r="1"/>
-                            <circle cx="5" cy="12" r="1"/>
-                        </svg>
-                    </button>
-                    <div class="offcanvas offcanvas-start d-lg-none" tabindex=-1 id=offcanvasExample aria-labelledby=offcanvasExampleLabel>
-                        <div class=offcanvas-header>
-                            <h5 class=offcanvas-title id=offcanvasExampleLabel>Browse docs</h5>
-                            <button type=button class=btn-close data-bs-dismiss=offcanvas aria-label=Close></button>
-                        </div>
-                        <div class=offcanvas-body>
-                            <aside class="doks-sidebar mt-n3">
-                                <nav id=doks-docs-nav aria-label="Tertiary navigation">
-                                    <h3 class="h6 text-uppercase mb-2">Case Study</h3>
-                                    <ul class=list-unstyled>
-                                      <li>
-                                          <a class=docs-link href=../introduction>Introduction</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../baas>BaaS</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../existing-solutions>Existing Solutions</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../snowclone-design>Snowclone Design</a>
-                                      </li>
-                                      <li>
-                                          <a class="docs-link active" href=../cloud-deployment>Cloud Deployment</a>
-                                      </li>
-                                      <li>
-                                          <a class=docs-link href=../future-work>Future Work</a>
-                                      </li>
-                                  </ul>
-                                </nav>
-                            </aside>
-                        </div>
-                    </div>
-                    <button class="btn btn-menu order-2 d-block d-lg-none" type=button data-bs-toggle=offcanvas data-bs-target=#offcanvasDoks aria-controls=offcanvasDoks aria-label="Open main menu">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
-                            <line x1="3" y1="12" x2="21" y2="12"/>
-                            <line x1="3" y1="6" x2="21" y2="6"/>
-                            <line x1="3" y1="18" x2="21" y2="18"/>
-                        </svg>
-                    </button>
-                    <div class="offcanvas offcanvas-end border-0 py-lg-1" tabindex=-1 id=offcanvasDoks data-bs-backdrop=true aria-labelledby=offcanvasDoksLabel>
-                        <div class="offcanvas-header d-lg-none">
-                            <h2 class="h5 offcanvas-title ps-2" id=offcanvasDoksLabel>
-                                <a class=text-dark href=../..>Snowclone</a>
-                            </h2>
-                            <button type=button class="btn-close text-reset me-2" data-bs-dismiss=offcanvas aria-label="Close main menu"></button>
-                        </div>
-                        <div class="offcanvas-body p-4 p-lg-0">
-                            <ul class="nav flex-column flex-lg-row align-items-lg-center mt-2 mt-lg-0 ms-lg-2 me-lg-auto">
-                                <li class=nav-item>
-                                    <a class="nav-link ps-0 py-1" href=../introduction>Case Study</a>
-                                </li>
-                                <li class=nav-item>
-                                    <a class="nav-link ps-0 py-1" href=../../about>About Us</a>
-                                </li>
-                            </ul>
-                            <hr class="text-black-50 my-4 d-lg-none">
-                            <hr class="text-black-50 my-4 d-lg-none">
-                            <ul class="nav flex-column flex-lg-row">
-                                <li class=nav-item>
-                                    <a class="nav-link social-link" href=https://github.com/snowclone-base>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f800c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github">
-                                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/>
-                                        </svg>
-                                        <small class="ms-2 d-lg-none">GitHub</small>
-                                    </a>
-                                </li>
-                            </ul>
-                            <hr class="text-black-50 my-4 d-lg-none">
-                        </div>
-                    </div>
-                </nav>
-            </header>
-        </div>
-        <div class=container-xxl>
-            <aside class=doks-sidebar>
-                <nav id=doks-docs-nav class="collapse d-lg-none" aria-label="Tertiary navigation">
-                    <h3 class="h6 text-uppercase mb-2">Case Study</h3>
-                    <ul class=list-unstyled>
-                      <li>
-                          <a class=docs-link href=../introduction>Introduction</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../baas>BaaS</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../existing-solutions>Existing Solutions</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../snowclone-design>Snowclone Design</a>
-                      </li>
-                      <li>
-                          <a class="docs-link active" href=../cloud-deployment>Cloud Deployment</a>
-                      </li>
-                      <li>
-                          <a class=docs-link href=../future-work>Future Work</a>
-                      </li>
-                  </ul>
-                </nav>
-            </aside>
-        </div>
-        <div class="wrap container-xxl" role=document>
-            <div class=content>
-                <div class="row flex-xl-nowrap">
-                    <div class="col-lg-4 col-xl-3 docs-sidebar d-none d-lg-block">
-                        <nav id=sidebar-default class=docs-links aria-label="Main navigation">
-                            <h3 class="h6 text-uppercase mb-2">Case Study</h3>
-                            <ul class=list-unstyled>
-                                <li>
-                                    <a class=docs-link href=../introduction>Introduction</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../baas>BaaS</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../existing-solutions>Existing Solutions</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../snowclone-design>Snowclone Design</a>
-                                </li>
-                                <li>
-                                    <a class="docs-link active" href=../cloud-deployment>Cloud Deployment</a>
-                                </li>
-                                <li>
-                                    <a class=docs-link href=../future-work>Future Work</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <nav class="docs-toc d-none d-xl-block col-xl-3" aria-label="Secondary navigation">
-                        <div class=d-xl-none>
-                            <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button data-bs-toggle=collapse data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false aria-label="Toggle On this page navigation">
-                                <span>On this page</span>
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <title>Expand</title>
-                                        <polyline points="7 13 12 18 17 13"/>
-                                        <polyline points="7 6 12 11 17 6"/>
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <title>Collapse</title>
-                                        <polyline points="17 11 12 6 7 11"/>
-                                        <polyline points="17 18 12 13 7 18"/>
-                                    </svg>
-                                </span>
-                            </button>
-                            <div class=collapse id=onThisPage>
-                                <div class="card card-body mt-3 py-1">
-                                    <div class=page-links>
-                                        <nav id=TableOfContents>
-                                            <ul>
-                                              <li>
-                                                <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
-                                              </li>
-                                              <li>
-                                                <a href=#compute>Compute</a>
-                                              </li>
-                                              <li>
-                                                <a href=#database>Database</a>
-                                              </li>
-                                              <li>
-                                                <a href=#data-access-control>Data Access Control</a>
-                                              </li>
-                                              <li>
-                                                <a href=#nat-to-the-rescue>NAT to the Rescue</a>
-                                              </li>
-                                              <li>
-                                                <a href=#https>HTTPS</a>
-                                              </li>
-                                              <li>
-                                                <a href=#aws-infrastructure>AWS Infrastructure</a>
-                                              </li>
-                                              <li>
-                                                <a href=#terraform>Terraform</a>
-                                              </li>
-                                              <li>
-                                                <a href=#snowclone-cli>Snowclone CLI</a>
-                                              </li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="page-links d-none d-xl-block">
-                            <h3>On this page</h3>
-                            <nav id=TableOfContents>
-                              <ul>
-                                <li>
-                                  <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
-                                </li>
-                                <li>
-                                  <a href=#compute>Compute</a>
-                                </li>
-                                <li>
-                                  <a href=#database>Database</a>
-                                </li>
-                                <li>
-                                  <a href=#data-access-control>Data Access Control</a>
-                                </li>
-                                <li>
-                                  <a href=#nat-to-the-rescue>NAT to the Rescue</a>
-                                </li>
-                                <li>
-                                  <a href=#https>HTTPS</a>
-                                </li>
-                                <li>
-                                  <a href=#aws-infrastructure>AWS Infrastructure</a>
-                                </li>
-                                <li>
-                                  <a href=#terraform>Terraform</a>
-                                </li>
-                                <li>
-                                  <a href=#snowclone-cli>Snowclone CLI</a>
-                                </li>
-                              </ul>
-                          </nav>
-                        </div>
-                    </nav>
-                    <main class="docs-content col-lg-12 col-xl-10">
-                        <h1 id=deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud
-                          <a href=#deploying-snowclone-to-your-cloud class=anchor aria-hidden=true>#</a>
-                        </h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        <p class=lead></p>
-                        <nav class=d-xl-none aria-label="Quaternary navigation">
-                            <div class=d-xl-none>
-                                <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button data-bs-toggle=collapse data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false aria-label="Toggle On this page navigation">
-                                    <span>On this page</span>
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <title>Expand</title>
-                                            <polyline points="7 13 12 18 17 13"/>
-                                            <polyline points="7 6 12 11 17 6"/>
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <title>Collapse</title>
-                                            <polyline points="17 11 12 6 7 11"/>
-                                            <polyline points="17 18 12 13 7 18"/>
-                                        </svg>
-                                    </span>
-                                </button>
-                                <div class=collapse id=onThisPage>
-                                    <div class="card card-body mt-3 py-1">
-                                        <div class=page-links>
-                                          <nav id=TableOfContents>
-                                            <ul>
-                                              <li>
-                                                <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
-                                              </li>
-                                              <li>
-                                                <a href=#compute>Compute</a>
-                                              </li>
-                                              <li>
-                                                <a href=#database>Database</a>
-                                              </li>
-                                              <li>
-                                                <a href=#data-access-control>Data Access Control</a>
-                                              </li>
-                                              <li>
-                                                <a href=#nat-to-the-rescue>NAT to the Rescue</a>
-                                              </li>
-                                              <li>
-                                                <a href=#https>HTTPS</a>
-                                              </li>
-                                              <li>
-                                                <a href=#aws-infrastructure>AWS Infrastructure</a>
-                                              </li>
-                                              <li>
-                                                <a href=#terraform>Terraform</a>
-                                              </li>
-                                              <li>
-                                                <a href=#snowclone-cli>Snowclone CLI</a>
-                                              </li>
-                                            </ul>
-                                        </nav>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="page-links d-none d-xl-block">
-                                <h3>On this page</h3>
-                                <nav id=TableOfContents>
-                                  <ul>
-                                    <li>
-                                      <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
-                                    </li>
-                                    <li>
-                                      <a href=#compute>Compute</a>
-                                    </li>
-                                    <li>
-                                      <a href=#database>Database</a>
-                                    </li>
-                                    <li>
-                                      <a href=#data-access-control>Data Access Control</a>
-                                    </li>
-                                    <li>
-                                      <a href=#nat-to-the-rescue>NAT to the Rescue</a>
-                                    </li>
-                                    <li>
-                                      <a href=#https>HTTPS</a>
-                                    </li>
-                                    <li>
-                                      <a href=#aws-infrastructure>AWS Infrastructure</a>
-                                    </li>
-                                    <li>
-                                      <a href=#terraform>Terraform</a>
-                                    </li>
-                                    <li>
-                                      <a href=#snowclone-cli>Snowclone CLI</a>
-                                    </li>
-                                  </ul>
-                              </nav>
-                            </div>
-                        </nav>
-                        <h2 id=compute>
-                          Compute <a href=#compute class=anchor aria-hidden=true>#</a>
-                        </h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        <h2 id=database>
-                          Database <a href=#database class=anchor aria-hidden=true>#</a>
-                        </h2>
-                          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                          <h2 id=data-access-control>
-                            Data Access Control <a href=#data-access-control class=anchor aria-hidden=true>#</a>
-                          </h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <h2 id=nat-to-the-rescue>
-                              NAT to the Rescue<a href=#nat-to-the-rescue class=anchor aria-hidden=true>#</a>
-                            </h2>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <h2 id=https>
-                              HTTPS<a href=#https class=anchor aria-hidden=true>#</a>
-                            </h2>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                              <h2 id=aws-infrastructure>
-                                AWS Infrastructure<a href=#aws-infrastructure class=anchor aria-hidden=true>#</a>
-                              </h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                <h2 id=terraform>
-                                  Terraform<a href=#terraform class=anchor aria-hidden=true>#</a>
-                                </h2>
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                  <h2 id=snowclone-cli>
-                                    Snowclone CLI<a href=#snowclone-cli class=anchor aria-hidden=true>#</a>
-                                  </h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                    <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between"></div>
-                                    <div class="docs-navigation d-flex justify-content-between">
-                                        <a href=../snowclone-design>
-                                            <div class="card my-1">
-                                                <div class="card-body py-2">&larr; Snowclone Design</div>
-                                            </div>
-                                        </a>
-                                        <a class=ms-auto href=../future-work>
-                                            <div class="card my-1">
-                                                <div class="card-body py-2">Future Work &rarr;</div>
-                                            </div>
-                                        </a>
-</div></main></div></div></div>
-<footer class="footer text-muted">
-    <div class=container-xxl>
-        <div class=row>
-            <div class="col-lg-8 order-last order-lg-first">
-                <ul class=list-inline>
-                    <li class=list-inline-item>
-                        Powered by coffee and snowcones
-                    </li>
+
+<head>
+  <meta charset=utf-8>
+  <meta http-equiv=x-ua-compatible content="ie=edge">
+  <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  <link rel=stylesheet href="../../styles/casestudy.css">
+  <noscript>
+    <style>
+      img.lazyload {
+        display: none
+      }
+    </style>
+  </noscript>
+  <meta name=robots content="index, follow">
+  <meta name=googlebot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name=bingbot content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <title>Cloud Deployment</title>
+  <meta name=description
+    content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
+  <link rel=canonical href=https://snowclone-base.github.io/casestudy/snowclone-design>
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Snowclone Design">
+  <meta property="og:description"
+    content="Snowclone is an open-source backend-as-a-service that provides developers with a Postgres database, instant APIs, authentication, and real-time subscriptions">
+  <meta property="og:url" content=https://snowclone-base.github.io/casestudy/snowclone-design>
+  <meta property="og:site_name" content="Snowclone">
+  <meta name=theme-color content="#fff">
+  <link rel=icon href="../../images/snowclone-favicon.ico" sizes=any>
+</head>
+
+<body class="docs single">
+  <div class="sticky-top">
+    <header class="navbar navbar-expand-lg navbar-light doks-navbar">
+      <nav class="container-xxl flex-wrap flex-lg-nowrap" aria-label="Main navigation">
+        <a class="navbar-brand order-0 mb-2" href="../.." aria-label="Snowclone">
+          <img class="logo-light" src="../../images/snowclone-full-logo.png" width="200px" style="padding-top: 11px;">
+        </a>
+        <button class="btn btn-link order-0 ms-auto d-lg-none" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-more-horizontal">
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+            <circle cx="5" cy="12" r="1"></circle>
+          </svg>
+        </button>
+        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="offcanvasExample"
+          aria-labelledby="offcanvasExampleLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Browse docs</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <aside class="doks-sidebar mt-n3">
+              <nav id="doks-docs-nav" aria-label="Tertiary navigation">
+                <h3 class="h6 text-uppercase mb-2">Case Study</h3>
+                <ul class="list-unstyled">
+                  <li>
+                    <a class="docs-link active" href="../introduction">Introduction</a>
+                  </li>
+                  <li>
+                    <a class="docs-link" href="../baas">BaaS</a>
+                  </li>
+                  <li>
+                    <a class="docs-link" href="../existing-solutions">Existing Solutions</a>
+                  </li>
+                  <li>
+                    <a class="docs-link" href="../snowclone-design">Snowclone Design</a>
+                  </li>
+                  <li>
+                    <a class="docs-link" href="../cloud-deployment">Cloud Deployment</a>
+                  </li>
+                  <li>
+                    <a class="docs-link" href="../future-work">Future Work</a>
+                  </li>
                 </ul>
-            </div>
-            <div class="col-lg-8 order-first order-lg-last text-lg-end">
-                <ul class=list-inline></ul>
-            </div>
+              </nav>
+            </aside>
+          </div>
         </div>
+        <button class="btn btn-menu order-2 d-block d-lg-none" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasDoks" aria-controls="offcanvasDoks" aria-label="Open main menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-menu">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="offcanvas offcanvas-end border-0 py-lg-1" tabindex="-1" id="offcanvasDoks" data-bs-backdrop="true"
+          aria-labelledby="offcanvasDoksLabel">
+          <div class="offcanvas-header d-lg-none">
+            <h2 class="h5 offcanvas-title ps-2" id="offcanvasDoksLabel">
+              <a class="text-dark" href="../..">Snowclone</a>
+            </h2>
+            <button type="button" class="btn-close text-reset me-2" data-bs-dismiss="offcanvas"
+              aria-label="Close main menu"></button>
+          </div>
+          <div class="offcanvas-body p-4 p-lg-0">
+            <div class="ms-auto">
+              <ul class="nav flex-column flex-lg-row align-items-lg-center mt-2 mt-lg-0 ms-lg-2 me-lg-auto">
+                <li class="nav-item">
+                  <a class="nav-link ps-0 py-1" href="/casestudy/introduction">Case Study</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link ps-0 py-1"
+                    href="https://github.com/snowclone-base/snowclone?tab=readme-ov-file#readme">Documentation</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link ps-0 py-1" href="/about">About Us</a>
+                </li>
+              </ul>
+            </div>
+            <hr class="text-black-50 my-4 d-lg-none">
+            <hr class="text-black-50 my-4 d-lg-none">
+            <ul class="nav flex-column flex-lg-row">
+              <li class="nav-item">
+                <a class="nav-link social-link" href="https://github.com/snowclone-base/snowclone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                    stroke="#f800c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-github" style="padding-bottom:10px">
+                    <path
+                      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22">
+                    </path>
+                  </svg>
+                  <small class="ms-2 d-lg-none">GitHub</small>
+                </a>
+              </li>
+            </ul>
+            <hr class="text-black-50 my-4 d-lg-none">
+          </div>
+        </div>
+      </nav>
+    </header>
+  </div>
+  <div class=container-xxl>
+    <aside class=doks-sidebar>
+      <nav id=doks-docs-nav class="collapse d-lg-none" aria-label="Tertiary navigation">
+        <h3 class="h6 text-uppercase mb-2">Case Study</h3>
+        <ul class=list-unstyled>
+          <li>
+            <a class=docs-link href=../introduction>Introduction</a>
+          </li>
+          <li>
+            <a class=docs-link href=../baas>BaaS</a>
+          </li>
+          <li>
+            <a class=docs-link href=../existing-solutions>Existing Solutions</a>
+          </li>
+          <li>
+            <a class=docs-link href=../snowclone-design>Snowclone Design</a>
+          </li>
+          <li>
+            <a class="docs-link active" href=../cloud-deployment>Cloud Deployment</a>
+          </li>
+          <li>
+            <a class=docs-link href=../future-work>Future Work</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+  <div class="wrap container-xxl" role=document>
+    <div class=content>
+      <div class="row flex-xl-nowrap">
+        <div class="col-lg-4 col-xl-3 docs-sidebar d-none d-lg-block">
+          <nav id=sidebar-default class=docs-links aria-label="Main navigation">
+            <h3 class="h6 text-uppercase mb-2">Case Study</h3>
+            <ul class=list-unstyled>
+              <li>
+                <a class=docs-link href=../introduction>Introduction</a>
+              </li>
+              <li>
+                <a class=docs-link href=../baas>BaaS</a>
+              </li>
+              <li>
+                <a class=docs-link href=../existing-solutions>Existing Solutions</a>
+              </li>
+              <li>
+                <a class=docs-link href=../snowclone-design>Snowclone Design</a>
+              </li>
+              <li>
+                <a class="docs-link active" href=../cloud-deployment>Cloud Deployment</a>
+              </li>
+              <li>
+                <a class=docs-link href=../future-work>Future Work</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <nav class="docs-toc d-none d-xl-block col-xl-3" aria-label="Secondary navigation">
+          <div class=d-xl-none>
+            <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button data-bs-toggle=collapse
+              data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false
+              aria-label="Toggle On this page navigation">
+              <span>On this page</span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                  class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <title>Expand</title>
+                  <polyline points="7 13 12 18 17 13" />
+                  <polyline points="7 6 12 11 17 6" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                  class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <title>Collapse</title>
+                  <polyline points="17 11 12 6 7 11" />
+                  <polyline points="17 18 12 13 7 18" />
+                </svg>
+              </span>
+            </button>
+            <div class=collapse id=onThisPage>
+              <div class="card card-body mt-3 py-1">
+                <div class=page-links>
+                  <nav id=TableOfContents>
+                    <ul>
+                      <li>
+                        <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
+                      </li>
+                      <li>
+                        <a href=#compute>Compute</a>
+                      </li>
+                      <li>
+                        <a href=#database>Database</a>
+                      </li>
+                      <li>
+                        <a href=#data-access-control>Data Access Control</a>
+                      </li>
+                      <li>
+                        <a href=#nat-to-the-rescue>NAT to the Rescue</a>
+                      </li>
+                      <li>
+                        <a href=#https>HTTPS</a>
+                      </li>
+                      <li>
+                        <a href=#aws-infrastructure>AWS Infrastructure</a>
+                      </li>
+                      <li>
+                        <a href=#terraform>Terraform</a>
+                      </li>
+                      <li>
+                        <a href=#snowclone-cli>Snowclone CLI</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page-links d-none d-xl-block">
+            <h3>On this page</h3>
+            <nav id=TableOfContents>
+              <ul>
+                <li>
+                  <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
+                </li>
+                <li>
+                  <a href=#compute>Compute</a>
+                </li>
+                <li>
+                  <a href=#database>Database</a>
+                </li>
+                <li>
+                  <a href=#data-access-control>Data Access Control</a>
+                </li>
+                <li>
+                  <a href=#nat-to-the-rescue>NAT to the Rescue</a>
+                </li>
+                <li>
+                  <a href=#https>HTTPS</a>
+                </li>
+                <li>
+                  <a href=#aws-infrastructure>AWS Infrastructure</a>
+                </li>
+                <li>
+                  <a href=#terraform>Terraform</a>
+                </li>
+                <li>
+                  <a href=#snowclone-cli>Snowclone CLI</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </nav>
+        <main class="docs-content col-lg-12 col-xl-10">
+          <h1 id=deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud
+            <a href=#deploying-snowclone-to-your-cloud class=anchor aria-hidden=true>#</a>
+          </h1>
+          <p>The goal for deploying Snowclone to a user’s cloud was simple: to provide the full Snowclone stack, but
+            hosted in Amazon Web Services (AWS). While Snowclone run locally is meant for one application, Snowclone
+            deployed to AWS is intended to host multiple backends. The deployment to AWS is a turnkey solution handled
+            by Snowclone CLI.</p>
+          <p>We chose AWS because it is the industry leader in cloud computing. The strategic decisions we made apply to
+            any cloud platform, only the implementation details will vary.</p>
+          <p>The workflow is as follows: a Snowclone user, via the Snowclone CLI, deploys a backend to their own AWS
+            environment. That backend is then made available at a URL for connection over the internet, with specific
+            functionalities like real-time, schema migration, and CRUD operations available through associated API
+            endpoints of the backend’s URL. A user can deploy many backends, all managed by the CLI.</p>
+          <p>In the sections below, we will go through each component of a backend’s AWS infrastructure, and discuss the
+            challenges encountered when deploying them. This will culminate with a discussion on the complete
+            architecture, and how we used Snowclone CLI in conjunction with the tool Terraform to provision our
+            solution.</p>
+          <p class=lead></p>
+          <nav class=d-xl-none aria-label="Quaternary navigation">
+            <div class=d-xl-none>
+              <button class="btn btn-outline-primary btn-sm doks-toc-toggle collapsed" type=button
+                data-bs-toggle=collapse data-bs-target=#onThisPage aria-controls=doks-docs-nav aria-expanded=false
+                aria-label="Toggle On this page navigation">
+                <span>On this page</span>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    class="doks doks-expand" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <title>Expand</title>
+                    <polyline points="7 13 12 18 17 13" />
+                    <polyline points="7 6 12 11 17 6" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    class="doks doks-collapse" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <title>Collapse</title>
+                    <polyline points="17 11 12 6 7 11" />
+                    <polyline points="17 18 12 13 7 18" />
+                  </svg>
+                </span>
+              </button>
+              <div class=collapse id=onThisPage>
+                <div class="card card-body mt-3 py-1">
+                  <div class=page-links>
+                    <nav id=TableOfContents>
+                      <ul>
+                        <li>
+                          <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
+                        </li>
+                        <li>
+                          <a href=#compute>Compute</a>
+                        </li>
+                        <li>
+                          <a href=#database>Database</a>
+                        </li>
+                        <li>
+                          <a href=#data-access-control>Data Access Control</a>
+                        </li>
+                        <li>
+                          <a href=#nat-to-the-rescue>NAT to the Rescue</a>
+                        </li>
+                        <li>
+                          <a href=#https>HTTPS</a>
+                        </li>
+                        <li>
+                          <a href=#aws-infrastructure>AWS Infrastructure</a>
+                        </li>
+                        <li>
+                          <a href=#terraform>Terraform</a>
+                        </li>
+                        <li>
+                          <a href=#snowclone-cli>Snowclone CLI</a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="page-links d-none d-xl-block">
+              <h3>On this page</h3>
+              <nav id=TableOfContents>
+                <ul>
+                  <li>
+                    <a href=#deploying-snowclone-to-your-cloud>Deploying Snowclone to your Cloud</a>
+                  </li>
+                  <li>
+                    <a href=#compute>Compute</a>
+                  </li>
+                  <li>
+                    <a href=#database>Database</a>
+                  </li>
+                  <li>
+                    <a href=#data-access-control>Data Access Control</a>
+                  </li>
+                  <li>
+                    <a href=#nat-to-the-rescue>NAT to the Rescue</a>
+                  </li>
+                  <li>
+                    <a href=#https>HTTPS</a>
+                  </li>
+                  <li>
+                    <a href=#aws-infrastructure>AWS Infrastructure</a>
+                  </li>
+                  <li>
+                    <a href=#terraform>Terraform</a>
+                  </li>
+                  <li>
+                    <a href=#snowclone-cli>Snowclone CLI</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </nav>
+          <h2 id=compute>
+            Compute <a href=#compute class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>We considered a few AWS offerings for our compute model, but chose Elastic Container Service (ECS) Fargate:
+          </p>
+          <ul>
+            <li><strong>Elastic Container Service (ECS) Fargate:</strong> Since our entire stack is containerized, we
+              chose to deploy it to ECS, a container orchestration service. ECS has options for “capacity”, the
+              infrastructure where containers run, with the relevant two capacity options for our use case being EC2 and
+              Fargate. EC2 required specifying the size and quantity of, and managing, the underlying EC2 instances. We
+              chose to deploy with Fargate to take advantage of its serverless pay-only-for-what-you-use model and
+              ensure that Snowclone users would not be responsible for managing servers. </li>
+          </ul>
+          <p>Alternatives we considered:</p>
+          <ul>
+            <li><strong>Elastic Cloud Compute (EC2):</strong> The easiest and most straightforward option for deployment
+              was to host our entire stack in an EC2 instance. However, EC2 is expensive and inflexible compared to
+              Elastic Container Service, so one might end up paying for more than is used.</li>
+            <li><strong>Lambda:</strong> These short-lived compute instances are cost-effective, but our tasks need to
+              be long-running since we have an event server that needs to keep SSE connections alive and a PostgREST
+              server whose caching mechanisms are rendered useless with a Lambda.</li>
+          </ul>
+          <p><strong>Structure of services:</strong> In ECS, a task equates to a container, a unit of code along with
+            its
+            dependencies. A task can be standalone or run by a service; a service handles a task’s lifecycle. To use
+            Fargate capacity in ECS, we first provision a cluster to group our services. A service can spin up more
+            tasks when traffic is high, remove those tasks when traffic decreases, and replace unhealthy tasks.
+          </p>
+          <p>Each task requires a task definition (analogous to the service definitions used locally in docker-compose
+            to specify configuration details for containers like port mapping, etc.) which, among other configuration
+            details, includes a reference to the Docker image that will be pulled down from Docker hub upon the task
+            being provisioned and used to hydrate the task.</p>
+          <figure>
+            <img src="../../images/ECS-terminology.png"
+              alt="Diagram showing relationships between AWS task, service, and cluster inside ECS Fargate">
+            <figcaption>Tasks are managed by services inside a Fargate cluster<sup id="fnref:1"><a href="#fn:1"
+                  class="footnote-ref" role="doc-noteref">1</a></sup></figcaption>
+          </figure>
+          <p>One challenge we encountered when provisioning Snowclone’s API servers was handling environment variables.
+            When Snowclone is run locally, these variables could be safely stored in a separate <code>.env</code> file
+            and referenced
+            in our docker-compose file. However, for AWS, these values needed to be defined in our ECS task definitions,
+            and transmitting these plain text values over the network was unacceptable from a security perspective.</p>
+          <p>AWS Secrets Manager proved a useful solution. This process will be more thoroughly covered in later
+            sections, but broadly speaking: when a user deploys a new backend with Snowclone, a temporary password and
+            username are generated for the database. Snowclone then supplies this password and username to our
+            infrastructure provisioning tool, Terraform, which registers the value as a secret in AWS Secrets Manager.
+            Sensitive data is thus stored in Secrets Manager and then referenced and retrieved in our task definitions
+            without hardcoding plain text values.</p>
+          <h2 id=database>
+            Database <a href=#database class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>When Snowclone is run locally, the database is a PostgreSQL instance running in a Docker container. To
+            recreate this functionality in AWS, and since we were already using ECS Fargate, the thought of spinning up
+            a Fargate service running a PostgreSQL task seemed like a possible solution. </p>
+          <p>However, persisting the database’s data in ECS is a tricky challenge. By design, containers in ECS are
+            ephemeral resources, their life cycles dependent on the actual Amazon servers hosting them— servers that can
+            be rebooted or shut down anytime. To overcome this issue, our data had to be written somewhere that outlived
+            the container’s life cycle.</p>
+          <figure>
+            <img src="../../images/container-lifecycle.gif"
+              alt="Animation showing different stages in a container lifecycle: healthy, pending, and unhealthy. ">
+            <figcaption>Container volumes are not persisted in ECS</figcaption>
+          </figure>
+          <p>In a local instance of Snowclone, Docker persists data using volumes stored on the local machine. Thus, if
+            the database container is shut down, the data can be accessed by the container when it restarts. This Docker
+            volume approach does not work in ECS Fargate, as no local host outlives the container.<sup id="fnref:2"><a
+                href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
+          <p>Our need for data persistence led us to use Amazon’s Relational Database Service (RDS) for our PostgreSQL
+            database.</p>
+          <figure>
+            <img src="../../images/rds.png"
+              alt="A schematic diagram of AWS infrastructure showing RDS under the ECS Fargate resources.">
+            <figcaption>RDS manages PostgreSQL for the instance's database</figcaption>
+          </figure>
+
+          <h2 id=data-access-control>
+            Data Access Control <a href=#data-access-control class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>To control access to the backend hosted on AWS, we wanted our database and API services running on ECS to
+            be in a private subnet, with only the application load balancer (ALB) remaining in a public subnet.<sup
+              id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> That
+            way, a backend’s only entry point from the internet would be through its ALB. The ALB handles routing
+            requests to the appropriate service based on the URL path of the incoming request (i.e. ”/realtime”,
+            “/schema”, or “/[tableName]” for CRUD requests to the postgREST API).<sup id="fnref:4"><a href="#fn:4"
+                class="footnote-ref" role="doc-noteref">4</a></sup></p>
+          <figure>
+            <img src="../../images/alb-public-subnet.png" alt="ALB in public subnet. ECS and RDS in private subnet.">
+            <figcaption>The ALB resides in the public subnet and everything else resides in the private subnet.
+            </figcaption>
+          </figure>
+          <p>“Inside” a backend (with “outside” being the public internet), the ALB can talk to the API services, but
+            there is no direct access from the public internet to the API services or the database. Furthermore, only
+            the API services can talk to the database, and the database can only talk to those API services. This
+            lockdown of communications was achieved via AWS security groups. Security groups can be thought of as
+            virtual firewalls for each AWS resource deployed in one’s VPC, as they control the ingress and egress of
+            traffic to that resource. Security groups also allow multiple backends to exist
+            on the same private subnet. Each backend has its own security groups; thus the API servers for Backend-A can
+            only talk to the database for Backend-A, not Backend-B.</p>
+          <p>However, we ran into an issue with our API services once we placed them on a private subnet: our Docker
+            images were hosted on Docker Hub, but without internet access, our tasks could not pull down from Docker
+            Hub. This lack of internet access also prevented tasks from connecting to AWS CloudWatch for logs<sup
+              id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> and
+            AWS Secrets Manager for secret environment variables.</p>
+          <h2 id=nat-to-the-rescue>
+            NAT to the Rescue<a href=#nat-to-the-rescue class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>We fixed this using a NAT (network address translation) gateway to route internet traffic from our private
+            subnet. NATs provide <a href="https://www.comptia.org/content/guides/what-is-network-address-translation">“a
+              way to map multiple private addresses inside a local network to a public IP address
+              before transferring the information onto the internet.”</a> The NAT is placed in the public subnet, and
+            the
+            route table for our private subnet is configured to send any non-local requests to the NAT. Containers could
+            now send outbound requests to the internet (e.g. Docker Hub), but inbound traffic through the NAT and into
+            the private subnet is locked down, with only responses to the containers's requests allowed.</p>
+          <figure>
+            <img src="../../images/natGateway.png"
+              alt="Egress traffic flows from private subnet to NAT gateway in public subnet">
+            <figcaption>
+              Traffic from the private subnet egresses through the NAT gateway to access resources on the Internet
+            </figcaption>
+          </figure>
+          <p>One drawback to this solution is the <a href="https://aws.amazon.com/vpc/pricing/">cost of an AWS NAT at
+              $0.04 per hour and $0.04 per GB of data transferred</a>. Instead of a NAT, another option would be an AWS
+            VPC endpoint, which allows one to
+            privately
+            connect to AWS services like CloudWatch or Secrets Manager. This version would be cheaper at <a
+              href="https://aws.amazon.com/privatelink/pricing/">$0.01 per hour
+              and $0.01 per GB transferred, per endpoint,</a> and if we used AWS Elastic Container Registry (ECR)
+            instead of
+            Docker Hub to host our container images, we could eliminate the need for our private subnet to connect to
+            the internet at all. All such container-related configuration/provisioning/logging traffic could stay inside
+            AWS.</p>
+          <p>However, each connection to an AWS service would require its own VPC endpoint. In pursuit of simplicity,
+            we chose to utilize fewer AWS resources by implementing the NAT gateway in our solution.</p>
+          <h2 id=https>
+            HTTPS<a href=#https class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>Since our backend manages sensitive data, it was necessary to implement SSL encryption on our backend URLs
+            and then route all web traffic through the HTTPS connection. </p>
+          <p>To provide HTTPS compatibility, we provisioned a TLS certificate and attached it to our endpoint. Since it
+            is <a
+              href="https://www.reddit.com/r/aws/comments/yy6lcm/how_do_i_add_a_https_certificate_to_alb/">impossible to
+              attach a TLS cert directly to our load balancer</a> DNS record, we require the user to provide
+            a domain for their Snowclone backends. Once our user provides their Route 53 domain, we can request and
+            validate a TLS certificate through AWS Certificate Manager (ACM).</p>
+          <p>A major design goal of our system is the ability to support multiple backends from a single point. Thus, we
+            requested a <a
+              href="https://knowledge.digicert.com/general-information/what-is-a-wildcard-certificate">wildcard
+              certificate </a> that extends SSL encryption to any subdomain on the domain. This allowed us
+            to provide unique URLs for each backend: </p>
+          <ul>
+            <li>https://myfirstapp.domain.com</li>
+            <li>https://mysecondapp.domain.com</li>
+          </ul>
+          <p>HTTPS is terminated at the load balancer and inter-service communication happens via HTTP which remains
+            secure since the Fargate tasks and database reside in private subnets.<sup id="fnref:6"><a href="#fn:6"
+                class="footnote-ref" role="doc-noteref">6</a></sup></p>
+          <figure>
+            <img src="../../images/HTTPS-termination.png"
+              alt="Diagram of AWS architecture showing paths of HTTPS and HTTP traffic">
+            <figcaption>HTTPS is terminated at the ALB and inter-service communication occurs via HTTP</figcaption>
+          </figure>
+          <h2 id=aws-infrastructure>
+            AWS Infrastructure<a href=#aws-infrastructure class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>Our AWS infrastructure is composed of two main sections: admin and instance. The admin section is the
+            foundation for the cloud architecture of Snowclone and needs to be provisioned only once. With the admin
+            infrastructure in place, the instance section provisions the resources required for each new backend that a
+            Snowclone user deploys. These two sections of infrastructure are deployed via the Snowclone CLI commands
+            <code>snowclone init</code> and <code>snowclone deploy</code>, respectively. The CLI and its commands are
+            covered in-depth later in "Snowclone CLI".
+          </p>
+          <figure>
+            <img src="../../images/snowclone-init.png"
+              alt="Diagram of AWS resources provisioned by running CLI command 'snowclone init'">
+            <figcaption>Admin infrastructure provisioned by running <code>snowclone init</code>. One NAT gateway is
+              provisioned in
+              one Availability Zone for cost purposes</figcaption>
+          </figure>
+          <p>The admin infrastructure section creates the resources that every subsequent backend instance will rely on.
+            These resources include network infrastructure like private subnets, route tables, NATs, DNS records, and
+            SSL certificates and also an AWS IAM role that allows containers in Fargate to make AWS API calls. To
+            address the challenge of managing multiple backends, an Amazon DynamoDB key-value table is created to keep
+            track of backend project names and their associated URLs, while an Amazon S3 bucket stores the details of
+            deployed resources for each backend (stored as Terraform state files— to be covered in more
+            detail later on in "Terraform").</p>
+          <p>Once the groundwork of the admin section is laid, the instance infrastructure section contains the AWS
+            resources for a single backend. Each of these components has been described in the above sections, and all
+            are the same as a locally run version of Snowclone, except for the application load balancer, and security
+            groups, both described above in “Data Access Control”. (Security groups are not pictured in the below
+            diagram to avoid icon overcrowding.)</p>
+          <figure>
+            <img src="../../images/snowclone-deploy.png"
+              alt="Diagram of AWS resources provisioned by running CLI command 'snowclone deploy'">
+            <figcaption>Infrastructure provisioned by running <code>snowclone deploy</code></figcaption>
+          </figure>
+          <p>The below figure is a culmination of our conversation on AWS infrastructure. In it, the admin
+            infrastructure is shown alongside the infrastructure for two separate backends. </p>
+          <figure>
+            <img src="../../images/dual-backends.png"
+              alt="Combined AWS admin infrastructure along with two instance architectures">
+            <figcaption>Infrastructure provisioned when managing two instances of Snowclone </figcaption>
+          </figure>
+          <h2 id=terraform>
+            Terraform<a href=#terraform class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>With all of this necessary AWS infrastructure, we needed a way to quickly provision and remove resources
+            and keep track of what is deployed. For this, we turned to Terraform, an infrastructure-as-code (IaC) tool
+            written in HashiCorp Configuration Language (HCL). HCL is a declarative language, meaning we declare what
+            resources we want to be provisioned within the configuration files, and Terraform plans and executes that
+            provisioning. Terraform keeps track of the state of the resources it has provisioned in a
+            <code>.tfstate</code> file,
+            which stores the resource data in JSON format and references this file when other terraform commands are
+            executed.
+          </p>
+          <p>By default, this Terraform state file is stored on the user’s local machine. However, it is common for
+            teams to want to collaborate and have access to the state files. For these situations Terraform allows state
+            files to be stored in a remote backend, and in the case of Snowclone, we elected to store state in an S3
+            bucket to enable collaboration.</p>
+          <h2 id=snowclone-cli>
+            Snowclone CLI<a href=#snowclone-cli class=anchor aria-hidden=true>#</a>
+          </h2>
+          <p>Although Terraform makes deploying AWS resources much more streamlined, there are a few considerations that
+            make it more complicated:</p>
+          <ul>
+            <li>Configuring remote state on S3</li>
+            <li>Keeping track of all the variables Terraform needs to name resources</li>
+            <li>Enabling the provisioning of multiple instances of the same Terraform configuration files</li>
+          </ul>
+          <p>We wanted to streamline this process as much as possible for our users. To accomplish this, we built a
+            command line interface to be the primary way users interact with Snowclone. Its main purpose is to wrap
+            Terraform commands into simple CLI commands.</p>
+          <p><code>snowclone init</code> is the first command a user must run to provision the admin infrastructure that
+            enables
+            backend instances to be deployed. When a Route 53 registered domain name and an AWS region are specified, an
+            S3
+            bucket is configured as a remote backend for Terraform, necessary IAM roles are set up, and a VPC with
+            subnets is provisioned to be shared across backend instances. A DynamoDB table is also provisioned to keep
+            track of information about any backends deployed. Last, a JSON file is created to store subnet IDs, the S3
+            bucket name, region, and domain on the local machine. When deploying backends, this data is plugged
+            into Terraform as variables.</p>
+          <p><code>snowclone deploy</code> first prompts a user for project-specific information before provisioning a
+            backend
+            instance. The project information is then saved to DynamoDB to be queried when a user wants to see what
+            backends are active or remove a backend.</p>
+          <p><code>snowclone import</code> prompts the user for a backend name and the path to a SQL file, then imports
+            that file
+            into the backend’s Postgres database.</p>
+          <p><code>snowclone remove</code> removes all the infrastructure associated with a backend and deletes the
+            associated record from DynamoDB. </p>
+          <p><code>snowclone melt</code> removes all admin infrastructure and returns the user’s AWS account to its
+            previous state before interacting with Snowclone.</p>
+          <h2 id="notes">Notes <a href="#notes" class="anchor" aria-hidden="true">#</a></h2>
+          <div class="footnotes" role="doc-endnotes">
+            <hr>
+            <ol>
+              <li id="fn:1">
+                <p>We provisioned two services in our Fargate cluster since it was necessary to decouple the PostgREST
+                  task from the schema upload task. This was a catch-22 situation where the postgREST task failed
+                  because it couldn’t log into the database, which caused the entire service to fail. This failed
+                  service included the schema task, through which we needed to upload the SQL file that created
+                  credentials for postgREST to log into the database. With postgREST moved to its own service, the
+                  schema task stayed up and we could upload our login SQL file. PostgREST could now log into the
+                  database, and all services passed their health checks.
+
+                <p>Our schema and realtime servers are deployed on a single ECS service. This decision was made to
+                  minimize the amount of AWS resources, and a reasonable idea for future work would be to break the
+                  realtime task out into its own service to facilitate scalability.</p>&nbsp;<a href="#fnref:1"
+                  class="footnote-backref" role="doc-backlink">↩︎</a>
+                </p>
+              </li>
+              <li id="fn:2">
+                <p>A potential workaround was to make our ECS Fargate-hosted database service stateful by persisting its
+                  data to Amazon Elastic Block Storage (EBS) and then reloading new task instances with this persisted
+                  data. <a
+                    href="https://aws.amazon.com/about-aws/whats-new/2024/01/amazon-ecs-fargate-integrate-ebs/">Despite
+                    recent advances in ECS/EBS integration,</a> this proposed volume reattachment to create
+                  stateful ECS services is not yet possible.&nbsp;<a href="#fnref:2" class="footnote-backref"
+                    role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:3">
+                <p>The distinction between a public and private subnet is that a public subnet has a route to the
+                  Internet. The private and public subnets are contained within the Virtual Private Cloud (VPC) of the
+                  user’s AWS environment. A VPC is a logically isolated virtual network similar to a traditional network
+                  one would host in one’s own data center. Once a VPC has subnets, AWS resources can be deployed to that
+                  VPC.&nbsp;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:4">
+                <p>Our realtime server’s code needed a tweak once deployed to AWS. ALBs on AWS have a default idle
+                  timeout of 60 seconds. Anytime a client connected to our realtime server exceeded this span without
+                  receiving a Server-Sent Event (SSE) the ALB terminated the connection. Our solution was for our server
+                  to send a keep-alive message every 30 seconds.&nbsp;<a href="#fnref:4" class="footnote-backref"
+                    role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:5">
+                <p> Logs were another challenge posed by our deployment to AWS. In a local Snowclone instance, Docker
+                  handled the logs of each container. Docker commands are unavailable in ECS, so we used AWS CloudWatch
+                  as our central log repository for all ECS services. CloudWatch allowed each separate backend to have
+                  its own CloudWatch log group where all of that backend’s services’s logs are collected. The drawback
+                  here is a decrease in accessibility to the logs — instead of viewing them directly from the local
+                  command line, a user needs to log in to their AWS console and view the logs in CloudWatch.&nbsp;<a
+                    href="#fnref:5" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:6">
+                <p> AWS Virtual Private Clouds are Software Defined Networks where traffic is encapsulated and
+                  authenticated at the packet level. <a
+                    href="https://kevin.burke.dev/kevin/aws-alb-validation-tls-reply/">https://kevin.burke.dev/kevin/aws-alb-validation-tls-reply/</a>
+                  &nbsp;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+              </li>
+            </ol>
+          </div>
+          <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between"></div>
+          <div class="docs-navigation d-flex justify-content-between">
+            <a href=../snowclone-design>
+              <div class="card my-1">
+                <div class="card-body py-2">&larr; Snowclone Design</div>
+              </div>
+            </a>
+            <a class=ms-auto href=../future-work>
+              <div class="card my-1">
+                <div class="card-body py-2">Future Work &rarr;</div>
+              </div>
+            </a>
+          </div>
+        </main>
+      </div>
     </div>
-<script src=../../scripts/bootstrap.js crossorigin=anonymous defer></script>
-<div class="d-flex fixed-bottom pb-4 pb-lg-5 pe-4 pe-lg-5">
+  </div>
+  <footer class="footer text-muted">
+    <div class="container-xxl">
+      <div class="row">
+        <div>
+          <ul class="list-inline" style="text-align: center">
+            <li>
+              <img src="../../images/snowclone-icon.png" class="img-fluid" alt="Snowclone logo"
+                style="width:56px;margin:8px">
+            </li>
+            <li class="list-inline-item">
+              Copyright © 2024 Snowclone
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-8 order-first order-lg-last text-lg-end">
+          <ul class="list-inline"></ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src=../../scripts/bootstrap.js crossorigin=anonymous defer></script>
+  <div class="d-flex fixed-bottom pb-4 pb-lg-5 pe-4 pe-lg-5">
     <a id=toTop href=# class="btn btn-outline-primary rounded-circle ms-auto p-2">
-        <span class=visually-hidden>Top</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
-            <polyline points="18 15 12 9 6 15"/>
-        </svg>
+      <span class=visually-hidden>Top</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="feather feather-chevron-up">
+        <polyline points="18 15 12 9 6 15" />
+      </svg>
     </a>
-</div>
-</body></html>
+  </div>
+</body>
+
+</html>
