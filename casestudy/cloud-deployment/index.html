@@ -561,27 +561,88 @@
           <h2 id=aws-infrastructure>
             AWS Infrastructure<a href=#aws-infrastructure class=anchor aria-hidden=true>#</a>
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
+          <p>Our AWS infrastructure is composed of two main sections: admin and instance. The admin section is the
+            foundation for the cloud architecture of Snowclone and needs to be provisioned only once. With the admin
+            infrastructure in place, the instance section provisions the resources required for each new backend that a
+            Snowclone user deploys.</p>
+          <figure>
+            <img src="../../images/snowclone-init.png"
+              alt="Diagram of AWS resources provisioned by running CLI command 'snowclone init'">
+            <figcaption>Admin infrastructure provisioned by running <code>snowclone init</code>. One NAT Gateway is
+              provisioned in
+              one Availability Zone for cost purposes</figcaption>
+          </figure>
+          <p>The admin infrastructure section creates the resources that every subsequent backend instance will rely on.
+            These resources include network infrastructure like private subnets, route tables, NATs, DNS records, and
+            SSL certificates and also an AWS IAM role that allows containers in Fargate to make AWS API calls. To
+            address the challenge of managing multiple backends, an Amazon DynamoDB key-value table is created to keep
+            track of backend project names and their associated URLs, while an Amazon S3 bucket stores the details of
+            deployed resources for each backend (stored as Terraform state files— Terraform will be covered in more
+            detail later on).</p>
+          <p>Once the groundwork of the admin section is laid, the instance infrastructure section contains the AWS
+            resources for a single backend. Each of these components has been described in the above sections, and all
+            are the same as a locally run version of Snowclone, except for the application load balancer, and security
+            groups, both described above in “Data Access Control”. (Security groups are not pictured in the below
+            diagram to avoid icon overcrowding.)</p>
+          <figure>
+            <img src="../../images/snowclone-deploy.png"
+              alt="Diagram of AWS resources provisioned by running CLI command 'snowclone deploy'">
+            <figcaption>Infrastructure provisioned by running <code>snowclone deploy</code></figcaption>
+          </figure>
+          <figure>
+            <img src="../../images/dual-backends.png"
+              alt="Combined AWS admin infrastructure along with two instance architectures">
+            <figcaption>Infrastructure provisioned when managing two instances of Snowclone </figcaption>
+          </figure>
           <h2 id=terraform>
             Terraform<a href=#terraform class=anchor aria-hidden=true>#</a>
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
+          <p>With all of this necessary AWS infrastructure, we needed a way to quickly provision and remove resources
+            and keep track of what is deployed. For this, we turned to Terraform, an infrastructure-as-code (IaC) tool
+            written in HashiCorp Configuration Language (HCL). HCL is a declarative language, meaning we declare what
+            resources we want to be provisioned within the configuration files, and Terraform plans and executes that
+            provisioning. Terraform keeps track of the state of the resources it has provisioned in a
+            <code>.tfstate</code> file,
+            which stores the resource data in JSON format and references this file when other terraform commands are
+            executed.
+          </p>
+          <p>By default, this Terraform state file is stored on the user’s local machine. However, it is common for
+            teams to want to collaborate and have access to the state files. For these situations Terraform allows state
+            files to be stored in a remote backend, and in the case of Snowclone, we elected to store state in an S3
+            bucket to enable collaboration.</p>
           <h2 id=snowclone-cli>
             Snowclone CLI<a href=#snowclone-cli class=anchor aria-hidden=true>#</a>
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
+          <p>Although Terraform makes deploying AWS resources much more streamlined, there are a few considerations that
+            make it more complicated:</p>
+          <ul>
+            <li>Configuring remote state on S3</li>
+            <li>Keeping track of all the variables Terraform needs to name resources</li>
+            <li>Enabling the provisioning of multiple instances of the same Terraform configuration files</li>
+          </ul>
+          <p>We wanted to streamline this process as much as possible for our users. To accomplish this, we built a
+            command line interface to be the primary way users interact with Snowclone. Its main purpose is to wrap
+            Terraform commands into simple CLI commands.</p>
+          <p><code>snowclone init</code> is the first command a user must run to provision the admin infrastructure that
+            enables
+            backend instances to be deployed. When a Route 53 registered domain name and an AWS region are specified, an
+            S3
+            bucket is configured as a remote backend for Terraform, necessary IAM roles are set up, and a VPC with
+            subnets is provisioned to be shared across backend instances. A DynamoDB table is also provisioned to keep
+            track of information about any backends deployed. Last, a JSON file is created to store subnet IDs, the S3
+            bucket name, region, and domain on the local machine. When deploying backends, this data is plugged
+            into Terraform as variables.</p>
+          <p><code>snowclone deploy</code> first prompts a user for project-specific information before provisioning a
+            backend
+            instance. The project information is then saved to DynamoDB to be queried when a user wants to see what
+            backends are active or remove a backend.</p>
+          <p><code>snowclone import</code> prompts the user for a backend name and the path to a SQL file, then imports
+            that file
+            into the backend’s Postgres database.</p>
+          <p><code>snowclone remove</code> removes all the infrastructure associated with a backend and deletes the
+            associated record from DynamoDB. </p>
+          <p><code>snowclone melt</code> removes all admin infrastructure and returns the user’s AWS account to its
+            previous state before interacting with Snowclone.</p>
           <h2 id="notes">Notes <a href="#notes" class="anchor" aria-hidden="true">#</a></h2>
           <div class="footnotes" role="doc-endnotes">
             <hr>
@@ -597,7 +658,7 @@
 
                 <p>Our schema and real-time servers are deployed on a single ECS service. This decision was made to
                   minimize the amount of AWS resources, and a reasonable idea for future work would be to break the
-                  real-time server out into its own service to facilitate scalability.</p>&nbsp;<a href="#fnref:1"
+                  realtime task out into its own service to facilitate scalability.</p>&nbsp;<a href="#fnref:1"
                   class="footnote-backref" role="doc-backlink">↩︎</a>
                 </p>
               </li>
@@ -628,10 +689,9 @@
                 <p> Logs were another challenge posed by our deployment to AWS. In a local Snowclone instance, Docker
                   handled the logs of each container. Docker commands are unavailable in ECS, so we used AWS CloudWatch
                   as our central log repository for all ECS services. CloudWatch allowed each separate backend to have
-                  its own CloudWatch log group where all of that backend’s services’s logs are collected. The tradeoff
+                  its own CloudWatch log group where all of that backend’s services’s logs are collected. The drawback
                   here is a decrease in accessibility to the logs — instead of viewing them directly from the local
-                  command line, a user needs to log in to their AWS console and view the logs in CloudWatch. A candidate
-                  for future work is making these CloudWatch logs viewable from the Snowclone CLI. &nbsp;<a
+                  command line, a user needs to log in to their AWS console and view the logs in CloudWatch.&nbsp;<a
                     href="#fnref:5" class="footnote-backref" role="doc-backlink">↩︎</a></p>
               </li>
               <li id="fn:6">
