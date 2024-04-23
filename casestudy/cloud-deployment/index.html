@@ -432,7 +432,8 @@
           <figure>
             <img src="../../images/ECS-terminology.png"
               alt="Diagram showing relationships between AWS task, service, and cluster inside ECS Fargate">
-            <figcaption>Tasks are managed by services inside a Fargate cluster</figcaption>
+            <figcaption>Tasks are managed by services inside a Fargate cluster<sup id="fnref:1"><a href="#fn:1"
+                  class="footnote-ref" role="doc-noteref">1</a></sup></figcaption>
           </figure>
           <p>One challenge we encountered when provisioning Snowclone’s API servers was handling environment variables.
             When Snowclone is run locally, these variables could be safely stored in a separate .env file and referenced
@@ -461,8 +462,8 @@
           </figure>
           <p>In a local instance of Snowclone, Docker persists data using volumes stored on the local machine. Thus, if
             the database container is shut down, the data can be accessed by the container when it restarts. This Docker
-            volume approach does not work in ECS Fargate, as no local host outlives the container.<sup id="fnref:1"><a
-                href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+            volume approach does not work in ECS Fargate, as no local host outlives the container.<sup id="fnref:2"><a
+                href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></p>
           <p>Our need for data persistence led us to use Amazon’s Relational Database Service (RDS) for our PostgreSQL
             database.</p>
           <figure>
@@ -474,27 +475,89 @@
           <h2 id=data-access-control>
             Data Access Control <a href=#data-access-control class=anchor aria-hidden=true>#</a>
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
+          <p>To control access to the backend hosted on AWS, we wanted our database and API services running on ECS to
+            be in a private subnet, with only the application load balancer (ALB) remaining in a public subnet.<sup
+              id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> That
+            way, a backend’s only entry point from the internet would be through its ALB. The ALB handles routing
+            requests to the appropriate service based on the URL path of the incoming request (i.e. ”/realtime”,
+            “/schema”, or “/[tableName]” for CRUD requests to the postgREST API).<sup id="fnref:4"><a href="#fn:4"
+                class="footnote-ref" role="doc-noteref">4</a></sup></p>
+          <figure>
+            <img src="../../images/alb-public-subnet.png" alt="ALB in public subnet. ECS and RDS in private subnet.">
+            <figcaption>The ALB resides in the public subnet and everything else resides in the private subnet.
+            </figcaption>
+          </figure>
+          <p>“Inside” a backend (with “outside” being the public internet), the ALB can talk to the API services, but
+            there is no direct access from the public internet to the API services or the database. Furthermore, only
+            the API services can talk to the database, and the database can only talk to those API services. This
+            lockdown of communications was achieved via AWS security groups. Security groups can be thought of as
+            virtual firewalls for each AWS resource deployed in one’s VPC, as they control the ingress and egress of
+            traffic to that resource. As will be discussed later, security groups also allow multiple backends to exist
+            on the same private subnet. Each backend has its own security groups; thus the API servers for Backend-A can
+            only talk to the database for Backend-A, not Backend-B.</p>
+          <p>However, we ran into an issue with our API services once we placed them on a private subnet: our Docker
+            images were hosted on Docker Hub, but without internet access, our tasks could not pull down from Docker
+            Hub. This lack of internet access also prevented tasks from connecting to AWS CloudWatch for logs<sup
+              id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup> and
+            AWS Secrets Manager for secret environment variables.</p>
           <h2 id=nat-to-the-rescue>
             NAT to the Rescue<a href=#nat-to-the-rescue class=anchor aria-hidden=true>#</a>
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
+          <p>We fixed this using a NAT (network address translation) gateway to route internet traffic from our private
+            subnet. NATs provide <a href="https://www.comptia.org/content/guides/what-is-network-address-translation">“a
+              way to map multiple private addresses inside a local network to a public IP address
+              before transferring the information onto the internet.”</a> The NAT is placed in the public subnet, and
+            the
+            route table for our private subnet is configured to send any non-local requests to the NAT. Containers could
+            now send outbound requests to the internet (e.g. Docker Hub), but inbound traffic through the NAT and into
+            the private subnet is locked down, only allowing responses to the containers's requests.</p>
+          <figure>
+            <img src="../../images/natGateway.png"
+              alt="Egress traffic flows from private subnet to NAT Gateway in public subnet">
+            <figcaption>
+              Traffic from the private subnet egresses through the NAT Gateway to access resources on the Internet
+            </figcaption>
+          </figure>
+          <p>One drawback to this solution is the <a href="https://aws.amazon.com/vpc/pricing/">cost of an AWS NAT at
+              $0.04 per hour and $0.04 per GB of data transferred</a>. Instead of a NAT, another option would be an AWS
+            VPC endpoint, which allows one to
+            privately
+            connect to AWS services like CloudWatch or Secrets Manager. This version would be cheaper at <a
+              href="https://aws.amazon.com/privatelink/pricing/">$0.01 per hour
+              and $0.01 per GB transferred, per endpoint,</a> and if we used AWS Elastic Container Registry (ECR)
+            instead of
+            Docker Hub to host our container images, we could eliminate the need for our private subnet to connect to
+            the internet at all. All such container-related configuration/provisioning/logging traffic could stay inside
+            AWS.</p>
+          <p>With a view to simplicity, our current solution opts for utilizing fewer AWS resources.</p>
           <h2 id=https>
             HTTPS<a href=#https class=anchor aria-hidden=true>#</a>
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.</p>
+          <p>Since our backend manages sensitive data, it was necessary to implement SSL encryption on our backend URLs
+            and then route all web traffic through the HTTPS connection. </p>
+          <p>To provide HTTPS compatibility, we provisioned a TLS certificate and attached it to our endpoint. Since it
+            is <a
+              href="https://www.reddit.com/r/aws/comments/yy6lcm/how_do_i_add_a_https_certificate_to_alb/">impossible to
+              attach a TLS cert directly to our load balancer</a> DNS record, we require the user to provide
+            a domain for their Snowclone backends. Once our user provides their Route 53 domain, we can request and
+            validate a TLS certificate through AWS Certificate Manager (ACM).</p>
+          <p>A major design goal of our system is the ability to support multiple backends from a single point. Thus, we
+            requested a <a
+              href="https://knowledge.digicert.com/general-information/what-is-a-wildcard-certificate">wildcard
+              certificate </a> that extends SSL encryption to any subdomain on the domain. This allowed us
+            to provide unique URLs for each backend: </p>
+          <ul>
+            <li>https://myfirstapp.domain.com</li>
+            <li>https://mysecondapp.domain.com</li>
+          </ul>
+          <p>HTTPS is terminated at the load balancer and inter-service communication happens via HTTP which remains
+            secure since the Fargate tasks and database reside in private subnets.<sup id="fnref:6"><a href="#fn:6"
+                class="footnote-ref" role="doc-noteref">6</a></sup></p>
+          <figure>
+            <img src="../../images/HTTPS-termination.png"
+              alt="Diagram of AWS architecture showing paths of HTTPS and HTTP traffic">
+            <figcaption>HTTPS is terminated at the ALB and inter-service communication occurs via HTTP</figcaption>
+          </figure>
           <h2 id=aws-infrastructure>
             AWS Infrastructure<a href=#aws-infrastructure class=anchor aria-hidden=true>#</a>
           </h2>
@@ -530,14 +593,52 @@
                   schema task we needed to upload a SQL file that created credentials for postgREST to log into the
                   database. With postgREST failing in its own service, the schema task stayed up and we could upload our
                   login SQL file. PostgREST could now log into the database, and all services now passed their health
-                  checks.&nbsp;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">↩︎</a>
+                  checks.
+
+                <p>Our schema and real-time servers are deployed on a single ECS service. This decision was made to
+                  minimize the amount of AWS resources, and a reasonable idea for future work would be to break the
+                  real-time server out into its own service to facilitate scalability.</p>&nbsp;<a href="#fnref:1"
+                  class="footnote-backref" role="doc-backlink">↩︎</a>
                 </p>
               </li>
               <li id="fn:2">
-                <p><a
-                    href="https://docs.expertflow.com/chat/3.18/hybrid-chat-deployment/turn-server-deployment-guide">TURN
-                    Server Deployment Guide</a>&nbsp;<a href="#fnref:2" class="footnote-backref"
+                <p>A potential workaround was to make our ECS Fargate-hosted database service stateful by persisting its
+                  data to Amazon Elastic Block Storage (EBS) and then reloading new task instances with this persisted
+                  data. <a
+                    href="https://aws.amazon.com/about-aws/whats-new/2024/01/amazon-ecs-fargate-integrate-ebs/">Despite
+                    recent advances in ECS/EBS integration,</a> this proposed volume reattachment to create
+                  stateful ECS services is not yet possible.&nbsp;<a href="#fnref:2" class="footnote-backref"
                     role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:3">
+                <p>The distinction between a public and private subnet is that a public subnet has a route to the
+                  Internet. The private and public subnets are contained within the Virtual Private Cloud (VPC) of the
+                  user’s AWS environment. A VPC is a logically isolated virtual network similar to a traditional network
+                  one would host in one’s own data center. Once a VPC has subnets, AWS resources can be deployed to that
+                  VPC.&nbsp;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:4">
+                <p>Our real-time server’s code needed a tweak once deployed to AWS. ALBs on AWS have a default idle
+                  timeout of 60 seconds. Anytime a client connected to our real-time server exceeded this span without
+                  receiving a Server-Sent Event (SSE) the ALB terminated the connection. Our solution was for our server
+                  to send a keep-alive message every 30 seconds.&nbsp;<a href="#fnref:4" class="footnote-backref"
+                    role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:5">
+                <p> Logs were another challenge posed by our deployment to AWS. In a local Snowclone instance, Docker
+                  handled the logs of each container. Docker commands are unavailable in ECS, so we used AWS CloudWatch
+                  as our central log repository for all ECS services. CloudWatch allowed each separate backend to have
+                  its own CloudWatch log group where all of that backend’s services’s logs are collected. The tradeoff
+                  here is a decrease in accessibility to the logs — instead of viewing them directly from the local
+                  command line, a user needs to log in to their AWS console and view the logs in CloudWatch. A candidate
+                  for future work is making these CloudWatch logs viewable from the Snowclone CLI. &nbsp;<a
+                    href="#fnref:5" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+              </li>
+              <li id="fn:6">
+                <p> AWS Virtual Private Clouds are Software Defined Networks where traffic is encapsulated and
+                  authenticated at the packet level. <a
+                    href="https://kevin.burke.dev/kevin/aws-alb-validation-tls-reply/">https://kevin.burke.dev/kevin/aws-alb-validation-tls-reply/</a>
+                  &nbsp;<a href="#fnref:6" class="footnote-backref" role="doc-backlink">↩︎</a></p>
               </li>
             </ol>
           </div>
