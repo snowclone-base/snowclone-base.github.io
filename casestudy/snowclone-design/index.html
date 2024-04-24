@@ -444,6 +444,23 @@
             subscribe to notifications via the event server using the “/realtime” endpoint.
           </p>
           <img src="../../images/snowclone-architecture.png" alt="Snowclone Architecture">
+          <h3 id=performance>
+            Performance
+          </h3>
+          <p>
+            We load-tested the real-time capability of a locally run instance of Snowclone using Gatling's SSE tool.
+          </p>
+          <p>
+            For an acceptable performance threshold, we chose a 95th percentile response time of 250 ms for SSEs from
+            our realtime server. This number is based on the finding that 250 ms is the average human reaction time.
+            <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>
+          </p>
+          <p>
+            We ramped up to 13,500 users by adding 450 users per second over 30 seconds, without server performance
+            degrading beyond acceptable. Each test user's SSE connection persisted for 3 minutes before closing. Within
+            that span, each test user received an SSE message upon connection to our “/realtime” path followed by an SSE
+            message every 5 seconds.
+          </p>
           <h2 id=security>
             Security <a href=#security class=anchor aria-hidden=true>#</a>
           </h2>
@@ -562,6 +579,18 @@
             the JWT added in the authentication header.
           </p>
           <img src="../../images/logins.png" alt="User Logins">
+          <h2 id="notes">Notes <a href="#notes" class="anchor" aria-hidden="true">#</a></h2>
+          <div class="footnotes" role="doc-endnotes">
+            <hr>
+            <ol>
+              <li id="fn:1">
+                <p><a
+                    href="https://www.pubnub.com/blog/how-fast-is-realtime-human-perception-and-technology">https://www.pubnub.com/blog/how-fast-is-realtime-human-perception-and-technology</a>
+                <p></p>&nbsp;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">↩︎</a>
+                </p>
+              </li>
+            </ol>
+          </div>
           <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between"></div>
           <div class="docs-navigation d-flex justify-content-between">
             <a href=../existing-solutions>
