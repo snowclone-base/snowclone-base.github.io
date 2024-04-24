@@ -195,6 +195,9 @@
                                               <li>
                                                 <a href=#comparison>Supabase vs Firebase vs Snowclone</a>
                                               </li>
+                                              <li>
+                                                <a href=#open-source>Open-Source</a>
+                                              </li>
                                             </ul>
                                         </nav>
                                     </div>
@@ -207,6 +210,9 @@
                                 <ul>
                                     <li>
                                       <a href=#comparison>Supabase vs Firebase vs Snowclone</a>
+                                    </li>
+                                    <li>
+                                        <a href=#open-source>Open-Source</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -240,6 +246,9 @@
                                                     <li>
                                                       <a href=#comparison>Supabase vs Firebase vs Snowclone</a>
                                                     </li>
+                                                    <li>
+                                                        <a href=#open-source>Open-Source</a>
+                                                    </li>
                                                 </ul>
                                             </nav>
                                         </div>
@@ -253,6 +262,9 @@
                                         <li>
                                           <a href=#comparison>Supabase vs Firebase vs Snowclone</a>
                                         </li>
+                                        <li>
+                                            <a href=#open-source>Open-Source</a>
+                                        </li>
                                     </ul>
                                 </nav>
                             </div>
@@ -260,9 +272,15 @@
                         <h2 id=comparison>
                           Supabase vs Firebase vs Snowclone <a href=#comparison class=anchor aria-hidden=true>#</a>
                         </h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        <img src="../../images/comparison.png" alt="Comparison of Supabase, Firebase, and Snowclone">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        <p>There are several BaaS options currently on the market. The most popular choices are Supabase and Google’s Firebase, the primary difference between these being their database types. Firebase makes use of a noSQL document database, while Supabase uses PostgreSQL. Teams with an evolving data model or a need for high scalability might prefer the flexibility and scaling capabilities of noSQL. In such cases, Firebase would likely be a good option for backend services. However, SQL’s ACID guarantees and querying capabilities ensure that it has remained the most prominent database type for web applications. The use of PostgreSQL makes Supabase a good option for teams that need relational databases and the benefits that are associated with them. Similarly, we designed Snowclone to use PostgreSQL due to the prominence of relational data models. </p>
+                        <img src="../../images/baas-comparison.png" alt="Comparison of Supabase, Firebase, and Snowclone">
+                        <h2 id=open-source>
+                          Open-Source <a href=#comparison class=anchor aria-hidden=true>#</a>
+                        </h2>
+                        <p>Developers seeking cost-efficient, convenient backend deployment might look to an open-source option. This provides large amounts of flexibility for different cloud-deployment scenarios, but it comes at the cost of the additional complexity of setting up and configuring resources on the cloud. Supabase’s open source version has many of the same features of its managed service and promises the option to deploy to any choice of cloud provider. While Supabase has lots of feature-richness that Snowclone lacks (such as support for edge functions and better scalability on the managed service), we wanted to address some of the pain points of its free and open-source offering.</p>
+                        <p>One aspect of Supabase’s free version that we wanted to improve upon was that each instance only allows one project, requiring users to reconfigure Supabase with each additional project. This is cumbersome for teams working on multiple projects who want to manage their projects under the same umbrella. We designed Snowclone with a command line interface that makes it easy to build, destroy, and manage many backend projects.</p>
+                        <p>Additionally, while the Supabase community offers an out-of-the-box deployment option to AWS, smaller organizations might find that the AWS stack is needlessly large and complex. The resources, including a CDN, application load balancer, and API gateway among several others, would cost at least $300 per month. We wanted to deliver on all of Snowclone’s design goals at a cheaper cost of infrastructure, and we managed to reduce those costs by about one-third.</p>
+                        <p>Snowclone provides a docker-compose file that a user can run to spin up docker images run by their machine. When ready, they can install the Snowclone CLI and deploy a project to their AWS account with ease. Users are also not limited to just one backend project, they can deploy up to 60 projects at the same time to AWS and manage each project easily on the Snowclone command line interface. With Snowclone, developers can deploy quickly, easily, and cost-effectively to AWS.</p>
                             <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between"></div>
                             <div class="docs-navigation d-flex justify-content-between">
                                 <a href=../baas>
@@ -277,20 +295,21 @@
                                 </a>
 </div></main></div></div></div>
 <footer class="footer text-muted">
-    <div class=container-xxl>
-        <div class=row>
-            <div class="col-lg-8 order-last order-lg-first">
-                <ul class=list-inline>
-                    <li class=list-inline-item>
-                        Powered by coffee and snowcones
-                    </li>
-                </ul>
-            </div>
-            <div class="col-lg-8 order-first order-lg-last text-lg-end">
-                <ul class=list-inline></ul>
-            </div>
+    <div class="container-xxl">
+      <div class="row">
+        <div>
+          <ul class="list-inline" style="text-align: center">
+            <li>
+              <img src="../../images/snowclone-icon.png" class="img-fluid" alt="Snowclone logo" style="width:56px;margin:8px">
+            </li>
+          </ul>
         </div>
+        <div class="col-lg-8 order-first order-lg-last text-lg-end">
+          <ul class="list-inline"></ul>
+        </div>
+      </div>
     </div>
+  </footer>
 <script src=../../scripts/bootstrap.js crossorigin=anonymous defer></script>
 <div class="d-flex fixed-bottom pb-4 pb-lg-5 pe-4 pe-lg-5">
     <a id=toTop href=# class="btn btn-outline-primary rounded-circle ms-auto p-2">
